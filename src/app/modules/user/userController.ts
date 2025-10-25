@@ -2,12 +2,23 @@ import { Request, Response } from "express";
 import { userServices } from "./userServices";
 
 const createAdmin=async(req:Request,res:Response)=>{
-    
-    const result=await userServices.createAdmin(req.body);
+    try {
+        const result=await userServices.createAdmin(req.body);
 
-    res.send({
+    res.status(200).json({        
+        success:true,
+        message:"successfully retrieve admin",
         result
     }) ;
+    } catch (error:any) {
+       res.status(500).json({
+        success:false,
+        message:error?.name || "failed to retrieve admin" ,
+        error
+       }) 
+    }
+    
+    
 }
 export const userController={
     createAdmin
