@@ -2,15 +2,17 @@
 import { Request, Response } from "express";
 import { adminServices } from "./adminServices";
 import pick from "../../../shared";
+import { adminFilterableField } from "./admin.constant";
 
 
 
 const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
     try {
           
-        const queryParams= pick(req.query,['name','contactNumber','email','searchTerm']);
-        
-        const result=await adminServices.getAllAdminDataFromDB(queryParams) ;
+        const queryParams= pick(req.query,adminFilterableField);
+        const options=pick(req.query,['page','limit']);
+       
+        const result=await adminServices.getAllAdminDataFromDB(queryParams,options) ;
         res.status(200).json({
             success:true,
             message:"get all admin data",

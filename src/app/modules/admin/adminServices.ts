@@ -1,10 +1,12 @@
 
 import { Prisma, PrismaClient } from "@prisma/client"
+import { adminSearchableFields } from "./admin.constant";
 
 const prisma=new PrismaClient();
 
-const getAllAdminDataFromDB=async(queryParams:any)=>{
+const getAllAdminDataFromDB=async(queryParams:any,options:any)=>{
 const {searchTerm,...filterData}=queryParams ;
+const {page,limit}=options ;
 
     const addCondition:Prisma.AdminWhereInput[]=[];
     
@@ -23,7 +25,7 @@ const {searchTerm,...filterData}=queryParams ;
     //    }
     // ]
 
-    const adminSearchableField=['name','email'] ;
+    const adminSearchableField=adminSearchableFields;
 
     if(searchTerm){
          addCondition.push({ OR:adminSearchableField.map(field=>({
@@ -49,7 +51,9 @@ const {searchTerm,...filterData}=queryParams ;
 // console.dir(addCondition,{depth:Infinity})
   const whereCondition :Prisma.AdminWhereInput={AND:addCondition};
    const result=await prisma.admin.findMany({
-    where:whereCondition 
+    where:whereCondition ,
+    skip:(Number(page)-1)*limit ,
+    take:Number(limit)
    }) ;
    return result ;
 }
