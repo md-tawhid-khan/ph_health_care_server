@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { adminServices } from "./adminServices";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/shared";
+import prisma from "../../../shared/prisma";
 
 
 
@@ -47,8 +48,9 @@ const getSingleAdminById=async(req:Request,res:Response)=>{
 }
 
 const updateAdminById=async(req:Request,res:Response)=>{
+    
     try {
-        const result=await adminServices.updateAdminById(req.params.id as string,req.body);
+   const result=await adminServices.updateAdminById(req.params.id as string,req.body);
         res.status(200).json({
             success:true,
             message:"update admin data",
@@ -62,11 +64,29 @@ const updateAdminById=async(req:Request,res:Response)=>{
             error
         })
     }
+} ;
+
+const deleteAdminById=async(req:Request,res:Response)=>{
+    try {
+         const result=await adminServices.deleteAdminById(req.params.id as string);
+          res.status(200).json({
+            success:true,
+            message:"delete admin data",           
+            result
+        })
+    } catch (error:any) {
+        res.status(500).json({
+            success:false,
+            message:error.name || "failed to delete admin data",
+            error
+        })
+    }
 }
 
 
 export const adminControllers ={
     getAllAdminDataFromDB,
     getSingleAdminById,
-    updateAdminById
+    updateAdminById,
+    deleteAdminById
 }
