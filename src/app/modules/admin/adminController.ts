@@ -10,7 +10,7 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
     try {
           
         const queryParams= pick(req.query,adminFilterableField);
-        const options=pick(req.query,['page','limit']);
+        const options=pick(req.query,['page','limit','sortBy','sortOrder']);
        
         const result=await adminServices.getAllAdminDataFromDB(queryParams,options) ;
         res.status(200).json({
