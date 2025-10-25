@@ -85,7 +85,17 @@ const getSingleAdminById=async(params:string)=>{
      return result
 }
 
+const updateAdminById=async(params:string,data)=>{
+     const result=await prisma.admin.update({
+        where:{id:params},
+        data
+     });
+
+     return result
+}
+
 export const adminServices={
     getAllAdminDataFromDB,
-    getSingleAdminById
+    getSingleAdminById,
+    updateAdminById
 }
