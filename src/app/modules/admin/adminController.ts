@@ -1,8 +1,8 @@
 
 import { Request, Response } from "express";
 import { adminServices } from "./adminServices";
-import pick from "../../../shared";
 import { adminFilterableField } from "./admin.constant";
+import pick from "../../../shared/shared";
 
 
 
