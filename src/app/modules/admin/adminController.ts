@@ -1,10 +1,15 @@
+
 import { Request, Response } from "express";
 import { adminServices } from "./adminServices";
+import pick from "../../../shared";
+
+
 
 const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
     try {
-        const queryParams= req.query ;
-      
+          
+        const queryParams= pick(req.query,['name','contactNumber','email','searchTerm']);
+        
         const result=await adminServices.getAllAdminDataFromDB(queryParams) ;
         res.status(200).json({
             success:true,
