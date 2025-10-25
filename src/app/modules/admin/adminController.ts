@@ -3,7 +3,7 @@ import { adminServices } from "./adminServices";
 
 const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
     try {
-        const queryParams= req.query.searchTerm ;
+        const queryParams= req.query ;
       
         const result=await adminServices.getAllAdminDataFromDB(queryParams) ;
         res.status(200).json({
