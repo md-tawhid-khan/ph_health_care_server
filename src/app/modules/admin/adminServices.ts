@@ -63,9 +63,29 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
        [sortBy]:sortOrder
     }
    }) ;
-   return result ;
+
+   const totalData= await prisma.admin.count({
+    where:whereCondition
+   })
+   return {
+    meta:{
+        page,
+        limit,
+        totalData
+    },
+    data:result
+} ;
+} ;
+
+const getSingleAdminById=async(params:string)=>{
+     const result=await prisma.admin.findUnique({
+        where:{id:params}
+     });
+
+     return result
 }
 
 export const adminServices={
-    getAllAdminDataFromDB
+    getAllAdminDataFromDB,
+    getSingleAdminById
 }

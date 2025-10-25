@@ -16,7 +16,26 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
         res.status(200).json({
             success:true,
             message:"get all admin data",
-            result
+            meta:result.meta,
+            data:result.data
+        })
+    } catch (error:any) {
+        res.status(500).json({
+            success:false,
+            message:error.name || "failed to get all admin data",
+            error
+        })
+    }
+};
+
+const getSingleAdminById=async(req:Request,res:Response)=>{
+    try {
+        const result=await adminServices.getSingleAdminById(req.params.id as string);
+        res.status(200).json({
+            success:true,
+            message:"get specific admin data",
+            
+           result
         })
     } catch (error:any) {
         res.status(500).json({
@@ -27,6 +46,8 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
     }
 }
 
+
 export const adminControllers ={
-    getAllAdminDataFromDB
+    getAllAdminDataFromDB,
+    getSingleAdminById
 }

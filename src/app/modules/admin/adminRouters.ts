@@ -3,6 +3,7 @@ import { adminControllers } from "./adminController";
 
 const router=Router()
 
-router.get("/",adminControllers.getAllAdminDataFromDB)
+router.get("/",adminControllers.getAllAdminDataFromDB);
+router.get("/:id",adminControllers.getSingleAdminById);
 
 export const adminRouters=router ;
