@@ -1,7 +1,5 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import { userRoutes } from './app/modules/user/userRouter';
-import { adminRouters } from './app/modules/admin/adminRouters';
 import router from './app/routers';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import status from 'http-status';

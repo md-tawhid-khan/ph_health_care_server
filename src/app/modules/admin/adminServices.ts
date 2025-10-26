@@ -1,11 +1,7 @@
-
 import { Admin, Prisma, userStatus, } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constant";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import prisma from "../../../shared/prisma";
-
-
-
 
 
 const getAllAdminDataFromDB=async(queryParams:any,options:any)=>{
