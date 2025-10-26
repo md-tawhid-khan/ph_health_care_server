@@ -3,6 +3,7 @@ import { adminServices } from "./adminServices";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/shared";
 import sendResponse from "../../../shared/sendResponse";
+import status from "http-status";
 
 
 const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
@@ -14,7 +15,7 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
         const result=await adminServices.getAllAdminDataFromDB(queryParams,options) ;
        
         sendResponse(res , {
-            statusCode:200,
+            statusCode:status.OK,
             success:true,
             message:"get all admin data",
             meta:result.meta,
@@ -34,7 +35,7 @@ const getSingleAdminById=async(req:Request,res:Response)=>{
         const result=await adminServices.getSingleAdminById(req.params.id as string);
        
         sendResponse(res,{
-            statusCode:200,
+            statusCode:status.OK,
             success:true,
             message:"get specific admin data",
             data:result
@@ -53,7 +54,7 @@ const updateAdminById=async(req:Request,res:Response)=>{
     try {
    const result=await adminServices.updateAdminById(req.params.id as string,req.body);
         sendResponse(res,{
-            statusCode:200,
+            statusCode:status.OK,
             success:true,
             message:"update specific admin data",
             data:result
@@ -71,7 +72,7 @@ const deleteAdminById=async(req:Request,res:Response)=>{
     try {
          const result=await adminServices.deleteAdminById(req.params.id as string);
           sendResponse(res,{
-            statusCode:200,
+            statusCode:status.OK,
             success:true,
             message:"delete permanently admin data",
             data:result
@@ -89,7 +90,7 @@ const softDeleteAdminById=async(req:Request,res:Response)=>{
     try {
          const result=await adminServices.softDeleteAdminById(req.params.id as string);
          sendResponse(res,{
-            statusCode:200,
+            statusCode:status.OK,
             success:true,
             message:"delete admin data",
             data:result
