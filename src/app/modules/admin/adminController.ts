@@ -1,12 +1,8 @@
-
 import { Request, Response } from "express";
 import { adminServices } from "./adminServices";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/shared";
-import { Admin } from "@prisma/client";
-
-
-
+import sendResponse from "../../../shared/sendResponse";
 
 
 const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
@@ -16,7 +12,9 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
         const options=pick(req.query,['page','limit','sortBy','sortOrder']);
        
         const result=await adminServices.getAllAdminDataFromDB(queryParams,options) ;
-        res.status(200).json({
+       
+        sendResponse(res , {
+            statusCode:200,
             success:true,
             message:"get all admin data",
             meta:result.meta,
@@ -34,11 +32,12 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
 const getSingleAdminById=async(req:Request,res:Response)=>{
     try {
         const result=await adminServices.getSingleAdminById(req.params.id as string);
-        res.status(200).json({
+       
+        sendResponse(res,{
+            statusCode:200,
             success:true,
             message:"get specific admin data",
-            
-           result
+            data:result
         })
     } catch (error:any) {
         res.status(500).json({
@@ -53,11 +52,11 @@ const updateAdminById=async(req:Request,res:Response)=>{
     
     try {
    const result=await adminServices.updateAdminById(req.params.id as string,req.body);
-        res.status(200).json({
+        sendResponse(res,{
+            statusCode:200,
             success:true,
-            message:"update admin data",
-            
-           result
+            message:"update specific admin data",
+            data:result
         })
     } catch (error:any) {
         res.status(500).json({
@@ -71,10 +70,11 @@ const updateAdminById=async(req:Request,res:Response)=>{
 const deleteAdminById=async(req:Request,res:Response)=>{
     try {
          const result=await adminServices.deleteAdminById(req.params.id as string);
-          res.status(200).json({
+          sendResponse(res,{
+            statusCode:200,
             success:true,
-            message:"delete admin data",           
-            result
+            message:"delete permanently admin data",
+            data:result
         })
     } catch (error:any) {
         res.status(500).json({
@@ -88,10 +88,11 @@ const deleteAdminById=async(req:Request,res:Response)=>{
 const softDeleteAdminById=async(req:Request,res:Response)=>{
     try {
          const result=await adminServices.softDeleteAdminById(req.params.id as string);
-          res.status(200).json({
+         sendResponse(res,{
+            statusCode:200,
             success:true,
-            message:"deleted admin data",           
-            result
+            message:"delete admin data",
+            data:result
         })
     } catch (error:any) {
         res.status(500).json({
