@@ -3,6 +3,7 @@ import cors from 'cors';
 import { userRoutes } from './app/modules/user/userRouter';
 import { adminRouters } from './app/modules/admin/adminRouters';
 import router from './app/routers';
+import globalErrorHandler from './app/middleware/globalErrorHandler';
 
 const app:Application=express() ;
 app.use(cors()) ;
@@ -17,6 +18,8 @@ app.get('/',(req:Request,res:Response)=>{
 });
 
 app.use('/api/v1', router);
+
+app.use(globalErrorHandler) ;
 
 
 export default app ;

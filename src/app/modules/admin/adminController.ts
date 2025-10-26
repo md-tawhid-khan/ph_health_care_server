@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminServices } from "./adminServices";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/shared";
@@ -6,7 +6,7 @@ import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 
 
-const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
+const getAllAdminDataFromDB=async(req:Request,res:Response,next:NextFunction)=>{
     try {
           
         const queryParams= pick(req.query,adminFilterableField);
@@ -22,15 +22,11 @@ const getAllAdminDataFromDB=async(req:Request,res:Response)=>{
             data:result.data
         })
     } catch (error:any) {
-        res.status(500).json({
-            success:false,
-            message:error.name || "failed to get all admin data",
-            error
-        })
+        next(error) ;
     }
 };
 
-const getSingleAdminById=async(req:Request,res:Response)=>{
+const getSingleAdminById=async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const result=await adminServices.getSingleAdminById(req.params.id as string);
        
@@ -41,15 +37,11 @@ const getSingleAdminById=async(req:Request,res:Response)=>{
             data:result
         })
     } catch (error:any) {
-        res.status(500).json({
-            success:false,
-            message:error.name || "failed to get all admin data",
-            error
-        })
+       next(error) ;
     }
 }
 
-const updateAdminById=async(req:Request,res:Response)=>{
+const updateAdminById=async(req:Request,res:Response,next:NextFunction)=>{
     
     try {
    const result=await adminServices.updateAdminById(req.params.id as string,req.body);
@@ -60,15 +52,11 @@ const updateAdminById=async(req:Request,res:Response)=>{
             data:result
         })
     } catch (error:any) {
-        res.status(500).json({
-            success:false,
-            message:error.name || "failed to update admin data",
-            error
-        })
+       next(error) ;
     }
 } ;
 
-const deleteAdminById=async(req:Request,res:Response)=>{
+const deleteAdminById=async(req:Request,res:Response,next:NextFunction)=>{
     try {
          const result=await adminServices.deleteAdminById(req.params.id as string);
           sendResponse(res,{
@@ -78,15 +66,11 @@ const deleteAdminById=async(req:Request,res:Response)=>{
             data:result
         })
     } catch (error:any) {
-        res.status(500).json({
-            success:false,
-            message:error.name || "failed to delete admin data",
-            error
-        })
+       next(error) ;
     }
 };
 
-const softDeleteAdminById=async(req:Request,res:Response)=>{
+const softDeleteAdminById=async(req:Request,res:Response,next:NextFunction)=>{
     try {
          const result=await adminServices.softDeleteAdminById(req.params.id as string);
          sendResponse(res,{
@@ -96,11 +80,7 @@ const softDeleteAdminById=async(req:Request,res:Response)=>{
             data:result
         })
     } catch (error:any) {
-        res.status(500).json({
-            success:false,
-            message:error.name || "failed to delete admin data",
-            error
-        })
+      next(error) ;
     }
 };
 
