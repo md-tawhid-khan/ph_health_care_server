@@ -1,9 +1,7 @@
-
-import { NextFunction, Request, Response, Router } from "express";
 import { adminControllers } from "./adminController";
-import z from "zod";
 import validationMiddleware from "../../middleware/validationMiddleware";
 import { adminValidation } from "./adminValidation";
+import { Router } from "express";
 
 
 const router=Router() ;
