@@ -4,22 +4,10 @@ import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/shared";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
-
-
-const catchAsync=(fn:RequestHandler)=>{
-    return async(req:Request,res:Response,next:NextFunction)=>{
-          try {
-            await fn(req,res,next) ;
-          } catch (error) {
-            next(error) ;
-          }
-    }
-} ;
-
+import catchAsync from "../../../shared/catchAsync";
 
 const getAllAdminDataFromDB=catchAsync(async(req:Request,res:Response)=>{
-   
-          
+             
         const queryParams= pick(req.query,adminFilterableField);
         const options=pick(req.query,['page','limit','sortBy','sortOrder']);
        
