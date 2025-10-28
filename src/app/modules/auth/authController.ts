@@ -20,6 +20,8 @@ const loginUser =catchAsync(async(req:Request,res:Response)=>{
        })
 }) ;
 
+//  create access token by using refresh token 
+
 const refreshToken =catchAsync(async(req:Request,res:Response)=>{
       const {refreshToken}= req.cookies;
       const result=await authServices.refreshToken(refreshToken) ;
