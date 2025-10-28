@@ -1,3 +1,4 @@
+
 import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import { authServices } from "./authServices";
@@ -19,6 +20,19 @@ const loginUser =catchAsync(async(req:Request,res:Response)=>{
        })
 }) ;
 
+const refreshToken =catchAsync(async(req:Request,res:Response)=>{
+      const {refreshToken}= req.cookies;
+      const result=await authServices.refreshToken(refreshToken) ;
+      sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:"create accesstoken successfully",
+        data:result
+    })
+    
+})
+
 export const authController={
-    loginUser
+    loginUser,
+    refreshToken
 } ;
