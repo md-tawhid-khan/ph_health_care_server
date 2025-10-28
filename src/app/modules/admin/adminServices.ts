@@ -57,6 +57,7 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
     })
 // console.dir(addCondition,{depth:Infinity})
   const whereCondition :Prisma.AdminWhereInput={AND:addCondition};
+  
    const result=await prisma.admin.findMany({
     where:whereCondition ,
     skip ,
@@ -78,6 +79,9 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
     data:result
 } ;
 } ;
+
+
+// -------get single admin data ------------
 
 const getSingleAdminById=async(params:string)=>{
      const result=await prisma.admin.findUnique({
