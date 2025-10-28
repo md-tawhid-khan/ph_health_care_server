@@ -14,8 +14,7 @@ const authTokenValidation=(...userRoles:string[])=>{
 
       const verifiedUser=verifyToken(token,config.jwt_access_secret!) as JwtPayload;
 
-     
-      
+     req.user=verifiedUser ;
       if(userRoles && !userRoles.includes(verifiedUser.role )){
            throw new apiError(status.FORBIDDEN,"forbidden") ;
       }

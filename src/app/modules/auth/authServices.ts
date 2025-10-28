@@ -1,3 +1,4 @@
+import { Payload } from './../../../../generated/prisma/internal/prismaNamespace';
 
 import  bcrypt  from 'bcrypt';
 import prisma from "../../../shared/prisma";
@@ -18,7 +19,7 @@ const loginUser=async(payload:{
         }
     })
 
-   const isCorrectPassword= await bcrypt.compare(payload.password,userData?.password as string);
+   const isCorrectPassword:boolean= await bcrypt.compare(payload.password,userData?.password as string);
    if(!isCorrectPassword){
     throw new Error("password is incorrect");
    }
@@ -61,7 +62,38 @@ const refreshToken =async(token:string)=>{
 }
 
 
+// -----------------password change ------------------
+
+const userPasswordChange=async(user:any,payload:any)=>{
+   
+   const userData=await prisma.user.findUniqueOrThrow({
+    where:{
+        email:user.email,
+        status:userStatus.ACTIVES
+    }
+   });
+
+     const isCorrectPassword : boolean= await bcrypt.compare(payload.oldPassword,userData?.password as string);
+   if(!isCorrectPassword){
+    throw new Error("password is incorrect");
+   }
+   
+   const hashedPassword=bcrypt.hashSync(payload.newPassword, 12);
+    
+   const changePassword=await prisma.user.update({
+    where:{
+        email:userData.email
+    },
+    data:{
+        password:hashedPassword,
+        needPasswordChange:false 
+    }
+   })
+  return changePassword ;
+}
+
 export const authServices={
     loginUser,
-    refreshToken
+    refreshToken,
+    userPasswordChange
 }
