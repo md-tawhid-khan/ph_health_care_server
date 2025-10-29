@@ -36,7 +36,7 @@ const refreshToken =catchAsync(async(req:Request,res:Response)=>{
 
 //  -------------- user password change -------------------
 
-const userPasswordChange=catchAsync(async(req:Request,res:Response)=>{
+const userPasswordChange=catchAsync(async(req:Request & {user?:any},res:Response)=>{
     const user = req.user ;
     const result=await authServices.userPasswordChange(user,req.body) ;
      sendResponse(res,{
@@ -47,8 +47,36 @@ const userPasswordChange=catchAsync(async(req:Request,res:Response)=>{
     });
 }) ;
 
+// ---------- forget password ---------------
+
+const forgetPassword=catchAsync(async(req:Request,res:Response)=>{
+     await authServices.forgetPassword(req.body) ;
+     sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:"check your gmail",
+        data:null
+    });
+});
+
+// ------------------- reset password ----------------
+
+const resetPassword=catchAsync(async(req:Request,res:Response)=>{
+    const token=req.headers.authorization;
+   
+    const result =await authServices.resetPassword(token,req.body);
+    sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:"reset password successfully",
+        data:null
+    });
+})
+
 export const authController={
     loginUser,
     refreshToken,
-    userPasswordChange
+    userPasswordChange,
+    forgetPassword,
+    resetPassword
 } ;

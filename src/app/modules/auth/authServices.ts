@@ -1,10 +1,13 @@
-import { Payload } from './../../../../generated/prisma/internal/prismaNamespace';
-
+import jwt from 'jsonwebtoken';
 import  bcrypt  from 'bcrypt';
 import prisma from "../../../shared/prisma";
 import generateToken, { verifyToken } from '../../../helper/jwtHelpers';
 import { userStatus } from '../../../../generated/prisma/enums';
 import config from '../../../config';
+import { sendMail } from './emailSender';
+import apiError from '../../errors/apiError';
+import status from 'http-status';
+
 
 
 
@@ -90,10 +93,72 @@ const userPasswordChange=async(user:any,payload:any)=>{
     }
    })
   return changePassword ;
+} ;
+
+const forgetPassword=async(payload:any)=>{
+    const userData=await prisma.user.findUniqueOrThrow({
+        where:{
+            email:payload.email,
+            status:userStatus.ACTIVES
+        } 
+    });
+
+    const resetPasswordToken= generateToken({email:userData.email,role:userData.role},config.jwt_access_secret as string,config.jwt_reset_password_token_expire_in)
+    // console.log(resetPasswordToken)
+    // http://localhost:3000/reset-password?email=mdtawhidkhan1998@gmail.com&token=shfkghdfggf
+
+const resetPassLink=config.reset_password_link + `?email=${userData.email}&token=${resetPasswordToken}` ;
+
+ await sendMail(userData.email,
+    `
+    <div>
+    <h1>Dear User</h1>
+    <p>Your password reset link 
+    <a href=${resetPassLink}>
+       <button>reset password</button>
+    </a>
+    </p>
+    </div>`)
+
+} ;
+
+// -----------  reset password  ---------------
+
+const resetPassword=async(token:any, payload:any)=>{
+   
+    const userInfo= verifyToken(token,config.jwt_access_secret as string);
+    if(!userInfo){
+        throw new apiError(status.UNAUTHORIZED,"the token is not valid");
+    }
+   
+ const isUserExist=await prisma.user.findUniqueOrThrow({
+    where:{
+        email:userInfo.email,
+        status:userStatus.ACTIVES
+    }
+ })
+ if(!isUserExist){
+    throw new apiError(status.NOT_FOUND,"user is not  exits ");
+ } ;
+ const hashedNewPassword=await bcrypt.hash(payload.newPassword,12);
+
+ const resetPassword=await prisma.user.update({
+    where:{
+        email:userInfo.email,
+        status:userStatus.ACTIVES
+    },
+    data:{
+        password:hashedNewPassword
+    }
+ }) ;
+
+
 }
 
 export const authServices={
     loginUser,
     refreshToken,
-    userPasswordChange
+    userPasswordChange,
+    forgetPassword,
+    resetPassword
 }
