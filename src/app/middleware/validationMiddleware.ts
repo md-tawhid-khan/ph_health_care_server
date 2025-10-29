@@ -9,10 +9,8 @@ const validationMiddleware=(schema:any)=>{
                return   next();
             } catch (error) {
                 next(error) ;
-            }
-   
+            }   
 }
-    
 
  } ;
 
