@@ -70,10 +70,24 @@ const createPatience=catchAsync(async(req:Request,res:Response)=>{
     
 });
 
+const changeUserStatus=catchAsync(async(req:Request,res:Response)=>{
+     const {id}=req.params ;
+     
+    const result = await userServices.changeUserStatus(id as string,req.body) ;
+      sendResponse(res , {
+            statusCode:status.OK,
+            success:true,
+            message:"get all user data",
+            
+            data:result
+        })
+})
+
 
 export const userController={
     createAdmin,
     createDoctor,
     createPatience,
-    getAllUserDataFromDB
+    getAllUserDataFromDB,
+    changeUserStatus
 } ;

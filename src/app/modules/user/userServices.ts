@@ -1,10 +1,11 @@
+import { status } from 'http-status';
 import {  Prisma, userRole } from "@prisma/client";
 import bcrypt from "bcrypt"
 import prisma from "../../../shared/prisma";
 import { uploadImage } from "../../../helper/fileUploaders";
 import { TAdminPagination } from "../../interface/pagination";
 import { paginationHelper } from "../../../helper/paginationHelper";
-import { TUserFilterRequest } from "./user.interface";
+import { TChangeStatus, TUserFilterRequest } from "./user.interface";
 import { userSearchableFields } from "./user.constant";
 
 
@@ -175,10 +176,29 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
 } ;
 } ;
 
+const changeUserStatus=async(id:string,data:any)=>{
+    await prisma.user.findUniqueOrThrow({
+        where:{
+            id
+        }
+    })
+   const changeUserStatus=await prisma.user.update({
+    where:{
+        id,
+    },
+    data:{
+        status:data.status
+    }
+   }) ;
+
+   return changeUserStatus ;
+
+}
 
 export const userServices={
     createAdmin,
     createDoctor,
     createPatience,
-    getAllUserDataFromDB
+    getAllUserDataFromDB,
+    changeUserStatus
 } ;

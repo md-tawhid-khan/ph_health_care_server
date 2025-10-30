@@ -1,7 +1,9 @@
 
+import { userStatus } from "@prisma/client";
 import {  z } from "zod";
 
 const genderEnum = z.enum(["MALE", "FEMALE",]);
+
 
 export const createAdminValidation = z.object({
   body: z.object({
@@ -60,10 +62,17 @@ const createPatienceValidation=z.object({
         isDelete: z.boolean().default(false),
     })
   })
-})
+}) ;
+
+const changeUserValidation=z.object({
+  body:z.object({
+    status:z.enum(["ACTIVES","BLOCKS","DELETED"])
+  }) 
+}) ;
 
 export const userValidation={
     createAdminValidation,
     createDoctorValidation,
-    createPatienceValidation
-}
+    createPatienceValidation,
+    changeUserValidation
+} ;

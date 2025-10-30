@@ -27,6 +27,9 @@ router.post( '/create-patience',upload.single('file'),(req:Request,res:Response,
     next()
   },validationMiddleware(userValidation.createPatienceValidation),userController.createPatience);
 
+
+router.post( '/change-status/:id',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),validationMiddleware(userValidation.changeUserValidation),userController.changeUserStatus);
+
 export const userRoutes = router;
 
 
