@@ -1,5 +1,5 @@
 
-import { z } from "zod";
+import {  z } from "zod";
 
 const genderEnum = z.enum(["MALE", "FEMALE",]);
 
@@ -48,7 +48,22 @@ const createDoctorValidation=z.object({
   })
 })
 
+const createPatienceValidation=z.object({
+  body:z.object({
+    password:z.string(),
+    patience:z.object({
+      name:z.string(),
+      email:z.string(),
+      profilePhoto: z.string().optional(),
+       contactNumber: z.string().min(6).max(20),
+        address: z.string().optional(),
+        isDelete: z.boolean().default(false),
+    })
+  })
+})
+
 export const userValidation={
     createAdminValidation,
-    createDoctorValidation
+    createDoctorValidation,
+    createPatienceValidation
 }

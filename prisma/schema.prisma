@@ -25,6 +25,7 @@ model User{
   updateAt DateTime @updatedAt
   admin Admin?
   doctor Doctor?
+  patience Patience?
   @@map("users")
 }
 
@@ -63,7 +64,20 @@ model Doctor {
   updateAt DateTime @updatedAt
   
   @@map("doctors")
-}
+} 
+
+model Patience {
+  id String @id @default(uuid()) 
+  name String
+  email String @unique
+  user User @relation(fields: [email],references: [email])
+  profilePhoto String?
+  contactNumber String
+  address String
+  isDelete Boolean @default(false)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+} 
 
 enum userRole {
   SUPER_ADMIN

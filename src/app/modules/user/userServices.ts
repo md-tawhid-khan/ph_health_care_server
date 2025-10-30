@@ -61,7 +61,37 @@ const createDoctor=async(req:any)=>{
 
 }
 
+const createPatience=async(req:any)=>{
+   
+    const image_url:string | undefined = await uploadImage(req.file.path as string) ;
+    
+   const{password,patience}=req.body;
+    
+     const hashedPassword=bcrypt.hashSync(password, 12);
+    const userData={
+       email:patience.email,
+            password:hashedPassword,
+            role:userRole.PATIENT   
+    } ;
+   const patienceData={
+     ...patience,
+     profilePhoto:image_url
+   } ;
+
+   
+    const result=await prisma.$transaction(async(transaction)=>{
+        await transaction.user.create({data:userData});
+        const createDoctor=await transaction.patience.create({data:patienceData}) ;
+        return createDoctor ;
+    }
+)
+   
+    return result ;
+
+}
+
 export const userServices={
     createAdmin,
-    createDoctor
+    createDoctor,
+    createPatience
 } ;

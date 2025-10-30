@@ -10,7 +10,6 @@ import { userValidation } from "./userValidation";
 const router=express.Router() ;
 
 
-
 router.post( '/create-admin',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
     req.body=JSON.parse(req.body.data);
     next()
@@ -21,6 +20,11 @@ router.post( '/create-doctor',authTokenValidation(userRole.ADMIN,userRole.SUPER_
     req.body=JSON.parse(req.body.data);
     next()
   },validationMiddleware(userValidation.createDoctorValidation),userController.createDoctor);
+
+router.post( '/create-patience',upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
+    req.body=JSON.parse(req.body.data);
+    next()
+  },validationMiddleware(userValidation.createPatienceValidation),userController.createPatience);
 
 export const userRoutes = router;
 
