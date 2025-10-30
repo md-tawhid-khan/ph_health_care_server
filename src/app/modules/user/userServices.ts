@@ -142,7 +142,23 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
     take:Number(limit),
     orderBy:{
        [sortBy]:sortOrder
-    }
+    },
+    select:{
+        id:true,
+        email:true,
+        role:true,
+        needPasswordChange:true,
+        createAt:true,
+        updateAt:true,
+        //  admin:true,
+        // doctor:true,
+        // patience:true
+    },
+    // include:{
+    //     admin:true,
+    //     doctor:true,
+    //     patience:true
+    // }
    }) ;
 
 
