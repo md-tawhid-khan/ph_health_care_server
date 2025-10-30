@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { userServices } from "./userServices";
-import { uploadImage } from "../../../helper/fileUploaders";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
+import pick from "../../../shared/shared";
+import { userFilterableField } from "./user.constant";
 
 const createAdmin=async(req:Request,res:Response)=>{
     try {
@@ -52,10 +53,27 @@ const createPatience=catchAsync(async(req:Request,res:Response)=>{
 }
 )
     
+    const getAllUserDataFromDB=catchAsync(async(req:Request,res:Response)=>{
+             
+        const queryParams= pick(req.query,userFilterableField);
+        const options=pick(req.query,['page','limit','sortBy','sortOrder']);
+        
+        const result=await userServices.getAllUserDataFromDB(queryParams,options) ;
+       
+        sendResponse(res , {
+            statusCode:status.OK,
+            success:true,
+            message:"get all user data",
+            meta:result.meta,
+            data:result.data
+        })
     
+});
+
 
 export const userController={
     createAdmin,
     createDoctor,
-    createPatience
+    createPatience,
+    getAllUserDataFromDB
 } ;

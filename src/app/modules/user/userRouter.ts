@@ -9,6 +9,7 @@ import { userValidation } from "./userValidation";
 
 const router=express.Router() ;
 
+router.get('/',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),userController.getAllUserDataFromDB) ;
 
 router.post( '/create-admin',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
     req.body=JSON.parse(req.body.data);
