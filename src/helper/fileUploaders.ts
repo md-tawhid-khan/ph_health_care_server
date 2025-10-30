@@ -3,6 +3,7 @@ import path from "path"
 import {v2 as cloudinary} from 'cloudinary'
 import 'dotenv/config'
 import config from "../config"
+import fs from 'fs'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -35,7 +36,7 @@ cloudinary.config({
 // Uploads an image file
 /////////////////////////
 
-export const uploadImage = async (imagePath:any) => {
+export const uploadImage = async (imagePath:string) => {
     
     // Use the uploaded file's name as the asset's public ID and 
     // allow overwriting the asset with new versions
@@ -49,7 +50,7 @@ export const uploadImage = async (imagePath:any) => {
     try {
       // Upload the image
       const result = await cloudinary.uploader.upload(imagePath, options);
-      
+      fs.unlinkSync(imagePath) ;
       return result. secure_url;
     } catch (error) {
       console.error(error);

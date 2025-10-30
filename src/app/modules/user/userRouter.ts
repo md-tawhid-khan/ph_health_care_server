@@ -11,11 +11,16 @@ const router=express.Router() ;
 
 
 
-
-router.post( '/',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
+router.post( '/create-admin',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
     req.body=JSON.parse(req.body.data);
     next()
   },validationMiddleware(userValidation.createAdminValidation),userController.createAdmin);
+
+
+router.post( '/create-doctor',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
+    req.body=JSON.parse(req.body.data);
+    next()
+  },validationMiddleware(userValidation.createDoctorValidation),userController.createDoctor);
 
 export const userRoutes = router;
 

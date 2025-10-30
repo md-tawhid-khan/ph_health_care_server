@@ -1,6 +1,7 @@
 
-
 import { z } from "zod";
+
+const genderEnum = z.enum(["MALE", "FEMALE",]);
 
 export const createAdminValidation = z.object({
   body: z.object({
@@ -24,7 +25,30 @@ export const createAdminValidation = z.object({
   }),
 });
 
+const createDoctorValidation=z.object({
+  body:z.object({
+       password:z.string(),
+       doctor:z.object({
+        name: z.string().min(1, "name is required"),
+        email: z.string(),
+        profilePhoto: z.string().optional(),
+       contactNo: z.string().min(6).max(20),
+       address: z.string().optional(),
+       registrationNumber: z.string(),
+       experience: z.number().int().nonnegative().default(0),
+       gender: genderEnum,
+      appiontentfree: z.number().int().nonnegative(),
+      qualification: z.string(),
+     currentWorkingPlace: z.string(),
+     designation: z.string(),
+    isDelete: z.boolean().default(false),
+    averageRating: z.number().min(0).max(5),
+  
+     })
+  })
+})
 
 export const userValidation={
-    createAdminValidation
+    createAdminValidation,
+    createDoctorValidation
 }

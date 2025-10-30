@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { userServices } from "./userServices";
 import { uploadImage } from "../../../helper/fileUploaders";
+import catchAsync from "../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
+import status from "http-status";
 
 const createAdmin=async(req:Request,res:Response)=>{
     try {
@@ -20,9 +23,25 @@ const createAdmin=async(req:Request,res:Response)=>{
         error
        }) 
     }
-    
-    
+   
 }
+
+const createDoctor=catchAsync(async(req:Request,res:Response)=>{
+
+   const result= await userServices.createDoctor(req);
+
+    sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:'doctor create successfully',
+        data:result 
+    })
+}
+)
+    
+    
+
 export const userController={
-    createAdmin
+    createAdmin,
+    createDoctor
 } ;

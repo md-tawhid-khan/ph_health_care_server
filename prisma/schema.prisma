@@ -24,6 +24,7 @@ model User{
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   admin Admin?
+  doctor Doctor?
   @@map("users")
 }
 
@@ -39,7 +40,30 @@ model Admin {
   updateAt DateTime @updatedAt
 
   @@map("admins")
-} 
+}
+
+model Doctor {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  user User @relation(fields: [email],references: [email],onDelete: Cascade)
+  profilePhoto String?
+  contactNo String
+  address String
+  registrationNumber String
+  experience Int @default(0)
+  gender gender
+  appiontentfree Int
+  qualification String
+  currentWorkingPlace String
+  designation String
+  isDelete Boolean @default(false)
+  averageRating Float
+  createAt DateTime  @default(now())
+  updateAt DateTime @updatedAt
+  
+  @@map("doctors")
+}
 
 enum userRole {
   SUPER_ADMIN
@@ -52,4 +76,9 @@ enum userStatus {
   ACTIVES
   BLOCKS
   DELETED
+}
+
+enum gender {
+  MALE
+  FEMALE
 }
