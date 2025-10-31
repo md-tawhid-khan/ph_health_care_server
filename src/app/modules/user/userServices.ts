@@ -1,12 +1,11 @@
-import { UserUpdateToOneWithWhereWithoutAdminInput } from './../../../../generated/prisma/models/User';
-import { status } from 'http-status';
+
 import {  Prisma, userRole, userStatus } from "@prisma/client";
 import bcrypt from "bcrypt"
 import prisma from "../../../shared/prisma";
 import { uploadImage } from "../../../helper/fileUploaders";
 import { TAdminPagination } from "../../interface/pagination";
 import { paginationHelper } from "../../../helper/paginationHelper";
-import { TChangeStatus, TUserFilterRequest } from "./user.interface";
+import {  TUserFilterRequest } from "./user.interface";
 import { userSearchableFields } from "./user.constant";
 
 
@@ -245,6 +244,56 @@ const getMyProfile=async(user)=>{
     }  ;
 
     return {...userInfo,...profileInfo} ;
+} ;
+
+const updateMyProfile=async(user:any,payload:any)=>{
+    const userInfo=await prisma.user.findUniqueOrThrow({
+        where:{
+            email:user.email,
+            status:userStatus.ACTIVES,
+            role:user.role 
+        },
+       
+    }) ;
+   
+ let profileInfo ;
+
+    if(userInfo.role === userRole.SUPER_ADMIN){
+        profileInfo=await prisma.admin.update({
+            where:{
+                email:userInfo.email
+            },
+            data:payload 
+        })
+    }
+    else if(userInfo.role === userRole.ADMIN){
+        profileInfo=await prisma.admin.update({
+            where:{
+                email:userInfo.email
+            },
+            data:payload
+        })
+    } 
+    else if(userInfo.role === userRole.DOCTOR){
+        profileInfo=await prisma.doctor.update({
+            where:{
+                email:userInfo.email
+            },
+            data:payload
+        })
+    } 
+    else if(userInfo.role === userRole.PATIENT){
+        profileInfo=await prisma.patience.update({
+            where:{
+                email:userInfo.email
+            },
+            data:payload
+        })
+    }  ;
+
+    return {...profileInfo} ;
+
+
 }
 
 export const userServices={
@@ -253,5 +302,6 @@ export const userServices={
     createPatience,
     getAllUserDataFromDB,
     changeUserStatus,
-    getMyProfile
+    getMyProfile,
+    updateMyProfile
 } ;

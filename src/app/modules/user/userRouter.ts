@@ -32,6 +32,12 @@ router.post( '/create-patience',upload.single('file'),(req:Request,res:Response,
 
 router.post( '/change-status/:id',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),validationMiddleware(userValidation.changeUserValidation),userController.changeUserStatus);
 
+
+router.patch( '/update-my-profile',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR,userRole.PATIENT),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
+    req.body=JSON.parse(req.body.data);
+    next()
+  },userController.updateMyProfile);
+
 export const userRoutes = router;
 
 
