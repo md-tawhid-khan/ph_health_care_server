@@ -1,5 +1,6 @@
+import { UserUpdateToOneWithWhereWithoutAdminInput } from './../../../../generated/prisma/models/User';
 import { status } from 'http-status';
-import {  Prisma, userRole } from "@prisma/client";
+import {  Prisma, userRole, userStatus } from "@prisma/client";
 import bcrypt from "bcrypt"
 import prisma from "../../../shared/prisma";
 import { uploadImage } from "../../../helper/fileUploaders";
@@ -195,10 +196,62 @@ const changeUserStatus=async(id:string,data:any)=>{
 
 }
 
+const getMyProfile=async(user)=>{
+    const userInfo=await prisma.user.findUniqueOrThrow({
+        where:{
+            email:user.email,
+            status:userStatus.ACTIVES,
+            role:user.role 
+        },
+        select:{
+            id:true,
+            email:true,
+            role:true,
+            needPasswordChange:true,
+            status:true 
+            
+        }
+    }) ;
+   
+    let profileInfo ;
+
+    if(userInfo.role === userRole.SUPER_ADMIN){
+        profileInfo=await prisma.admin.findUniqueOrThrow({
+            where:{
+                email:userInfo.email
+            }
+        })
+    }
+    else if(userInfo.role === userRole.ADMIN){
+        profileInfo=await prisma.admin.findUniqueOrThrow({
+            where:{
+                email:userInfo.email
+            }
+        })
+    } 
+    else if(userInfo.role === userRole.DOCTOR){
+        profileInfo=await prisma.doctor.findUniqueOrThrow({
+            where:{
+                email:userInfo.email
+            }
+        })
+    } 
+    else if(userInfo.role === userRole.PATIENT){
+        profileInfo=await prisma.patience.findUniqueOrThrow({
+            where:{
+                email:userInfo.email
+            }
+        })
+    }  ;
+
+    return {...userInfo,...profileInfo} ;
+}
+
 export const userServices={
     createAdmin,
     createDoctor,
     createPatience,
     getAllUserDataFromDB,
-    changeUserStatus
+    changeUserStatus,
+    getMyProfile
 } ;

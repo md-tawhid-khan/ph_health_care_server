@@ -81,6 +81,18 @@ const changeUserStatus=catchAsync(async(req:Request,res:Response)=>{
             
             data:result
         })
+}) ;
+
+const getMyProfile=catchAsync(async(req:Request,res:Response)=>{
+     
+     const result =await userServices.getMyProfile(req.user) ;
+      sendResponse(res , {
+            statusCode:status.OK,
+            success:true,
+            message:"get all user data",
+            
+            data:result
+        })
 })
 
 
@@ -89,5 +101,6 @@ export const userController={
     createDoctor,
     createPatience,
     getAllUserDataFromDB,
-    changeUserStatus
+    changeUserStatus,
+    getMyProfile
 } ;

@@ -11,6 +11,8 @@ const router=express.Router() ;
 
 router.get('/',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),userController.getAllUserDataFromDB) ;
 
+router.get('/me',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR,userRole.PATIENT),userController.getMyProfile) ;
+
 router.post( '/create-admin',authTokenValidation(userRole.ADMIN,userRole.SUPER_ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
     req.body=JSON.parse(req.body.data);
     next()
