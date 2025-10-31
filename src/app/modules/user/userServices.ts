@@ -7,11 +7,15 @@ import { TAdminPagination } from "../../interface/pagination";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import {  TUserFilterRequest } from "./user.interface";
 import { userSearchableFields } from "./user.constant";
+import { Request } from "express";
 
 
 const createAdmin =async(req:any)=>{
-  
-const image_url:string | undefined = await uploadImage(req.file.path as string) ;
+  let image_url ;
+    if(req?.file?.path){
+        image_url = await uploadImage(req.file.path as string) ;
+
+    }
 
     
     const{password,admin}=req.body;
@@ -39,7 +43,11 @@ const image_url:string | undefined = await uploadImage(req.file.path as string) 
 } ;
 
 const createDoctor=async(req:any)=>{
-    const image_url:string | undefined = await uploadImage(req.file.path as string) ;
+    let image_url ;
+    if(req?.file?.path){
+        image_url = await uploadImage(req.file.path as string) ;
+
+    }
    const{password,doctor}=req.body;
     
      const hashedPassword=bcrypt.hashSync(password, 12);
@@ -68,8 +76,12 @@ const createDoctor=async(req:any)=>{
 
 const createPatience=async(req:any)=>{
    
-    const image_url:string | undefined = await uploadImage(req.file.path as string) ;
-    
+    let image_url ;
+    if(req?.file?.path){
+        image_url = await uploadImage(req.file.path as string) ;
+
+    } ;
+
    const{password,patience}=req.body;
     
      const hashedPassword=bcrypt.hashSync(password, 12);
@@ -195,7 +207,7 @@ const changeUserStatus=async(id:string,data:any)=>{
 
 }
 
-const getMyProfile=async(user)=>{
+const getMyProfile=async(user:any)=>{
     const userInfo=await prisma.user.findUniqueOrThrow({
         where:{
             email:user.email,
@@ -246,7 +258,7 @@ const getMyProfile=async(user)=>{
     return {...userInfo,...profileInfo} ;
 } ;
 
-const updateMyProfile=async(user:any,payload:any)=>{
+const updateMyProfile=async(user:any,req:Request)=>{
     const userInfo=await prisma.user.findUniqueOrThrow({
         where:{
             email:user.email,
@@ -255,6 +267,13 @@ const updateMyProfile=async(user:any,payload:any)=>{
         },
        
     }) ;
+
+    // console.log(req.file) ;
+
+    if(req.file){
+        const image_url=await uploadImage(req.file?.path)
+        req.body.profilePhoto=image_url
+    } ;
    
  let profileInfo ;
 
@@ -263,7 +282,7 @@ const updateMyProfile=async(user:any,payload:any)=>{
             where:{
                 email:userInfo.email
             },
-            data:payload 
+            data:req.body 
         })
     }
     else if(userInfo.role === userRole.ADMIN){
@@ -271,7 +290,7 @@ const updateMyProfile=async(user:any,payload:any)=>{
             where:{
                 email:userInfo.email
             },
-            data:payload
+            data:req.body
         })
     } 
     else if(userInfo.role === userRole.DOCTOR){
@@ -279,7 +298,7 @@ const updateMyProfile=async(user:any,payload:any)=>{
             where:{
                 email:userInfo.email
             },
-            data:payload
+            data:req.body
         })
     } 
     else if(userInfo.role === userRole.PATIENT){
@@ -287,7 +306,7 @@ const updateMyProfile=async(user:any,payload:any)=>{
             where:{
                 email:userInfo.email
             },
-            data:payload
+            data:req.body
         })
     }  ;
 

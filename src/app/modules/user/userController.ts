@@ -97,8 +97,8 @@ const getMyProfile=catchAsync(async(req:Request,res:Response)=>{
 
 const updateMyProfile=catchAsync(async(req:Request,res:Response)=>{
       const user=req.user  ;
-   
-     const result =await userServices.updateMyProfile(user,req.body) ;
+     
+     const result =await userServices.updateMyProfile(user,req) ;
       sendResponse(res , {
             statusCode:status.OK,
             success:true,
