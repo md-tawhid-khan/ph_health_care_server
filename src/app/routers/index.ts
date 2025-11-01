@@ -4,6 +4,7 @@ import { userRoutes } from "../modules/user/userRouter";
 import { adminRouters } from "../modules/admin/adminRouters";
 import { authRouter } from "../modules/auth/authRouters";
 import { advertisementRouter } from "../modules/advertisement/advertisementRouter";
+import { doctorRouter } from '../modules/doctor/doctor.router';
 
 const router=Router()
 
@@ -27,6 +28,10 @@ const moduleRouter=[
     {
       path:'/specialities',
       route:specialitiesRouter
+    } ,
+    {
+      path:'/doctor',
+      route:doctorRouter
     }
 ] ;
 
