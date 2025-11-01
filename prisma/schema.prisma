@@ -63,6 +63,7 @@ model Doctor {
   createAt DateTime  @default(now())
   updateAt DateTime @updatedAt
   
+  doctorSpecialist DoctorSpecialist[]
   @@map("doctors")
 } 
 
@@ -77,7 +78,27 @@ model Patience {
   isDelete Boolean @default(false)
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
+
+  @@map("patiencs")
 } 
+
+model Specialitist {
+  id String @id @default(uuid())
+  title String
+  icon String
+  doctorSpacialist DoctorSpecialist[]
+@@map("specialitists")
+}
+
+model DoctorSpecialist {
+  specialistId String
+  spacialist Specialitist @relation(fields: [specialistId],references: [id])
+  doctorId  String
+  doctor Doctor @relation(fields: [doctorId],references: [id])
+
+  @@id([specialistId,doctorId])
+  @@map("doctorSpecialists")
+}
 
 enum userRole {
   SUPER_ADMIN

@@ -1,3 +1,4 @@
+import { specialitiesRouter } from './../modules/specialities/specialities.router';
 import { Router } from "express";
 import { userRoutes } from "../modules/user/userRouter";
 import { adminRouters } from "../modules/admin/adminRouters";
@@ -22,6 +23,10 @@ const moduleRouter=[
     {
       path:'/advertisement',
       route:advertisementRouter
+    },
+    {
+      path:'/specialities',
+      route:specialitiesRouter
     }
 ] ;
 

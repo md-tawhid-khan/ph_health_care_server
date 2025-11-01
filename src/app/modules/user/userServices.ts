@@ -1,5 +1,6 @@
+import { status } from 'http-status';
 
-import {  Prisma, userRole, userStatus } from "@prisma/client";
+import {  Admin, Doctor, Patience, Prisma, userRole, userStatus } from "@prisma/client";
 import bcrypt from "bcrypt"
 import prisma from "../../../shared/prisma";
 import { uploadImage } from "../../../helper/fileUploaders";
@@ -8,9 +9,10 @@ import { paginationHelper } from "../../../helper/paginationHelper";
 import {  TUserFilterRequest } from "./user.interface";
 import { userSearchableFields } from "./user.constant";
 import { Request } from "express";
+import { TAuthUser } from '../../interface/common';
 
 
-const createAdmin =async(req:any)=>{
+const createAdmin =async(req:Request):Promise<Admin>=>{
   let image_url ;
     if(req?.file?.path){
         image_url = await uploadImage(req.file.path as string) ;
@@ -42,7 +44,7 @@ const createAdmin =async(req:any)=>{
     return result ;
 } ;
 
-const createDoctor=async(req:any)=>{
+const createDoctor=async(req:Request):Promise<Doctor>=>{
     let image_url ;
     if(req?.file?.path){
         image_url = await uploadImage(req.file.path as string) ;
@@ -74,7 +76,7 @@ const createDoctor=async(req:any)=>{
 
 }
 
-const createPatience=async(req:any)=>{
+const createPatience=async(req:Request):Promise<Patience>=>{
    
     let image_url ;
     if(req?.file?.path){
@@ -188,7 +190,7 @@ const {page,limit,sortOrder,sortBy,skip}=paginationHelper.calculatePagination(op
 } ;
 } ;
 
-const changeUserStatus=async(id:string,data:any)=>{
+const changeUserStatus=async(id:string,data:{status:userStatus})=>{
     await prisma.user.findUniqueOrThrow({
         where:{
             id
@@ -207,7 +209,7 @@ const changeUserStatus=async(id:string,data:any)=>{
 
 }
 
-const getMyProfile=async(user:any)=>{
+const getMyProfile=async(user:TAuthUser)=>{
     const userInfo=await prisma.user.findUniqueOrThrow({
         where:{
             email:user.email,
@@ -258,7 +260,7 @@ const getMyProfile=async(user:any)=>{
     return {...userInfo,...profileInfo} ;
 } ;
 
-const updateMyProfile=async(user:any,req:Request)=>{
+const updateMyProfile=async(user:TAuthUser,req:Request)=>{
     const userInfo=await prisma.user.findUniqueOrThrow({
         where:{
             email:user.email,

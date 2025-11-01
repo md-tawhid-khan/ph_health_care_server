@@ -1,0 +1,20 @@
+import { Request, Response } from "express";
+import catchAsync from "../../../shared/catchAsync";
+import { specialitiesServices } from "./specialities.services";
+import sendResponse from "../../../shared/sendResponse";
+import status from "http-status";
+
+const createSpecialities=catchAsync(async(req:Request,res:Response)=>{
+ const result = await specialitiesServices.createSpecialities(req)
+ sendResponse(res,{
+    statusCode:status.OK,
+    success:true,
+    message:"create specialities successfully ",
+    data:result
+ }) ;
+ 
+})
+
+export const specialitiesController={
+    createSpecialities
+}

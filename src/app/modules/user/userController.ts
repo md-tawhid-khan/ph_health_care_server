@@ -1,3 +1,4 @@
+
 import { Request, Response } from "express";
 import { userServices } from "./userServices";
 import catchAsync from "../../../shared/catchAsync";
@@ -5,6 +6,7 @@ import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 import pick from "../../../shared/shared";
 import { userFilterableField } from "./user.constant";
+import { TAuthUser } from "../../interface/common";
 
 const createAdmin=async(req:Request,res:Response)=>{
     try {
@@ -53,8 +55,9 @@ const createPatience=catchAsync(async(req:Request,res:Response)=>{
 }
 )
     
-    const getAllUserDataFromDB=catchAsync(async(req:Request,res:Response)=>{
-             
+const getAllUserDataFromDB=catchAsync(async(req:Request,res:Response)=>{
+         
+    
         const queryParams= pick(req.query,userFilterableField);
         const options=pick(req.query,['page','limit','sortBy','sortOrder']);
         
@@ -83,9 +86,9 @@ const changeUserStatus=catchAsync(async(req:Request,res:Response)=>{
         })
 }) ;
 
-const getMyProfile=catchAsync(async(req:Request,res:Response)=>{
+const getMyProfile=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
      
-     const result =await userServices.getMyProfile(req.user) ;
+     const result =await userServices.getMyProfile(req.user!) ;
       sendResponse(res , {
             statusCode:status.OK,
             success:true,
@@ -95,10 +98,10 @@ const getMyProfile=catchAsync(async(req:Request,res:Response)=>{
         })
 }) ;
 
-const updateMyProfile=catchAsync(async(req:Request,res:Response)=>{
+const updateMyProfile=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
       const user=req.user  ;
      
-     const result =await userServices.updateMyProfile(user,req) ;
+     const result =await userServices.updateMyProfile(user!,req) ;
       sendResponse(res , {
             statusCode:status.OK,
             success:true,
