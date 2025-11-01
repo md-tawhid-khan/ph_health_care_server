@@ -7,4 +7,8 @@ const router=Router() ;
 
 router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),doctorController.getAllDoctorData) ;
 
+router.get('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),doctorController.getSingleDoctorData) ;
+
+router.delete('/:id',authTokenValidation(userRole.SUPER_ADMIN),doctorController.deleteDoctorData) ;
+
 export const doctorRouter=router ;

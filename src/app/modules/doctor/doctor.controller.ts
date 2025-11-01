@@ -15,6 +15,30 @@ const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
     }) ;
 }) ;
 
+const getSingleDoctorData=catchAsync(async(req:Request,res:Response)=>{
+    
+     const result=await doctorServices.getSingleDoctorData(req) ;
+     sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:'get single data',
+        data:result
+     }) ;
+}) ;
+
+const deleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
+     const result = await doctorServices.deleteDoctorData(req) ;
+     sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:'deleted data successfully',
+        data:result 
+     })
+})
+
 export const doctorController={
-    getAllDoctorData
+    getAllDoctorData ,
+    getSingleDoctorData,
+    deleteDoctorData
+
 } ;
