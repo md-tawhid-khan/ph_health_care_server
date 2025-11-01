@@ -8,11 +8,13 @@ import { specialitiesValidation } from "./specialitiesValidation";
 
 const router=Router()
 
- router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),specialitiesController.getAllSpecialities) ;
+  router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),specialitiesController.getAllSpecialities) ;
 
-router.post('/create-specialities',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
+  router.post('/create-specialities',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),upload.single('file'),(req:Request,res:Response,next:NextFunction)=>{
     req.body=JSON.parse(req.body.data);
     next()
   },validationMiddleware(specialitiesValidation.createSpecilitiesValidation),specialitiesController.createSpecialities) ;
+
+  router.delete('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),specialitiesController.deleteSpecialities) ;
 
 export const specialitiesRouter = router ;

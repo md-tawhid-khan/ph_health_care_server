@@ -23,7 +23,17 @@ const createSpecialities=async(req:Request)=>{
 
 } ;
 
+const deleteSpecialities=async(specialitiesId : string)=>{
+    const result=await prisma.specialitist.delete({
+        where:{
+            id:specialitiesId
+        }
+    }) ;
+    return result ;
+}
+
 export const specialitiesServices={
     createSpecialities,
-    getAllSpecialities
+    getAllSpecialities,
+    deleteSpecialities
 }
