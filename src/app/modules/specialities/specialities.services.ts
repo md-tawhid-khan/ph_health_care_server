@@ -2,6 +2,12 @@ import { Request } from "express"
 import { uploadImage } from "../../../helper/fileUploaders"
 import prisma from "../../../shared/prisma";
 
+const getAllSpecialities=async()=>{
+    const result=await prisma.specialitist.findMany();
+
+    return result ;
+} ;
+
 const createSpecialities=async(req:Request)=>{
     if(req.file){
          const icon_url=await uploadImage(req.file?.path as string) ;
@@ -15,8 +21,9 @@ const createSpecialities=async(req:Request)=>{
   
   return result ;
 
-}
+} ;
 
 export const specialitiesServices={
-    createSpecialities
+    createSpecialities,
+    getAllSpecialities
 }

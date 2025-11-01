@@ -4,6 +4,18 @@ import { specialitiesServices } from "./specialities.services";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 
+const getAllSpecialities=catchAsync(async(req:Request,res:Response)=>{
+  const result=await specialitiesServices.getAllSpecialities() ;
+
+  sendResponse(res,{
+    statusCode:status.OK,
+    success:true,
+    message:'get all specialities data',
+    data:result
+  })
+
+}) ;
+
 const createSpecialities=catchAsync(async(req:Request,res:Response)=>{
  const result = await specialitiesServices.createSpecialities(req)
  sendResponse(res,{
@@ -12,9 +24,10 @@ const createSpecialities=catchAsync(async(req:Request,res:Response)=>{
     message:"create specialities successfully ",
     data:result
  }) ;
- 
-})
+
+}) ;
 
 export const specialitiesController={
-    createSpecialities
+    createSpecialities,
+    getAllSpecialities
 }
