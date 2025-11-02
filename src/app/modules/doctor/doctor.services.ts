@@ -1,13 +1,77 @@
 import { Request } from "express";
 import prisma from "../../../shared/prisma";
-import { userStatus } from "@prisma/client";
+import { Prisma, userStatus } from "@prisma/client";
 import { TAuthUser } from "../../interface/common";
+import { paginationHelper } from "../../../helper/paginationHelper";
+import { doctorSearchableField } from "./doctor.constant";
+import { object } from "zod";
 
 
-const getAllDoctorData=async()=>{
-   const result=await prisma.doctor.findMany() ;
-   return result ;
+const getAllDoctorData=async(queryParams,options)=>{
+  const{searchTerm,...filterableField}=queryParams ;  
+  const {page,limit,skip,sortBy,sortOrder}= paginationHelper.calculatePagination(options) ;
+  
+  const addCondition: Prisma.DoctorWhereInput[]= [] ;
+
+  const doctorSearchField=doctorSearchableField ;
+  
+  if(searchTerm){
+    addCondition.push({
+        OR:doctorSearchField.map(field=>({
+            [field]:{
+                contains:searchTerm ,
+                mode:'insensitive'
+        }
+     } )) 
+    }) ;
+  } ;
+
+     if(Object.keys(filterableField).length>0){
+        addCondition.push({
+            AND:Object.keys(filterableField).map(field=>({
+                [field]:{
+                    equals:filterableField[field]
+                }
+            }))
+        })
+     } ;
+
+     addCondition.push({
+        isDelete:false
+     }) ;
+
+//  console.dir(addCondition,{depth:Infinity}) ;
+
+const whereCondition:Prisma.DoctorWhereInput={AND:addCondition} ;
+
+//  console.dir(whereCondition,{depth:Infinity}) ;
+
+   const result=await prisma.doctor.findMany({
+    where:whereCondition,
+    skip ,
+    take:Number(limit),
+    orderBy:{
+       [sortBy]:sortOrder
+    }
+   }) ;
+  
+  
+
+   const totalData=await prisma.doctor.count({
+    where:whereCondition
+   }) ;
+
+   return {
+    meta:{
+        page,
+        limit,
+        totalData
+    },
+    data:result
+   } ;
 } ;
+
+
 
 const getSingleDoctorData=async(req:Request & {user:TAuthUser})=>{
     const user=req.user ;

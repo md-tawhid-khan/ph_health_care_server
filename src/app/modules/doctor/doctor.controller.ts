@@ -3,16 +3,23 @@ import catchAsync from "../../../shared/catchAsync";
 import { doctorServices } from "./doctor.services";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
-import { TAuthUser } from "../../interface/common";
+import { doctorFilterableField } from "./doctor.constant";
+import pick from "../../../shared/shared";
+
 
 
 const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
-    const result=await doctorServices.getAllDoctorData() ;
+   
+    const queryParams=pick(req.query,doctorFilterableField);
+    const options=pick(req.query,['page','limit','sortBy','sortOrder']) ;
+   
+    const result=await doctorServices.getAllDoctorData(queryParams,options) ;
     sendResponse(res,{
         statusCode:status.OK,
         success:true,
         message:"get all doctor data",
-        data:result
+        meta:result.meta,
+        data:result.data
     }) ;
 }) ;
 
