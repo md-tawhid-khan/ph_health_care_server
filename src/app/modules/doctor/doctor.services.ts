@@ -1,6 +1,7 @@
 import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import { userStatus } from "@prisma/client";
+import { TAuthUser } from "../../interface/common";
 
 
 const getAllDoctorData=async()=>{
@@ -8,7 +9,7 @@ const getAllDoctorData=async()=>{
    return result ;
 } ;
 
-const getSingleDoctorData=async(req:Request)=>{
+const getSingleDoctorData=async(req:Request & {user:TAuthUser})=>{
     const user=req.user ;
    
     const params=req.params.id as string;
@@ -28,7 +29,7 @@ const getSingleDoctorData=async(req:Request)=>{
    return result  ;
 } ;
  
-   const deleteDoctorData=async(req:Request)=>{
+   const deleteDoctorData=async(req:Request & {user:TAuthUser})=>{
        const user=req.user ;
        const params=req.params.id as string ;
        const userInfo=await prisma.user.findUniqueOrThrow({
@@ -48,8 +49,8 @@ const getSingleDoctorData=async(req:Request)=>{
 
    } ;
 
-   const softDeleteDoctorData=async(req:Request)=>{
-     const user = req?.user ;
+   const softDeleteDoctorData=async(req:Request & {user:TAuthUser})=>{
+     const user = req?.user  ;
      const params = req.params.id as string ;
      const userInfo=await prisma.user.findUniqueOrThrow({
         where:{
@@ -83,9 +84,81 @@ const getSingleDoctorData=async(req:Request)=>{
 
    } ;
 
+   const updateDoctorData=async(req:Request & {user:TAuthUser})=>{
+       const user=req.user ; 
+       const doctorId=req.params.id as string;
+       const doctorData=req.body.doctorData ;
+       const specialities=req.body.specialities ;
+       
+       const userInfo=await prisma.user.findUniqueOrThrow({
+        where:{
+            email:user.email,
+            status:userStatus.ACTIVES
+        }
+       }) ;
+
+       
+     
+       await prisma.$transaction(async(transaction)=>{
+        const updateDoctorInfo= await transaction.doctor.update({
+            where:{
+                id:doctorId
+            },
+            data: doctorData,
+           
+        }) ;
+         if(specialities && specialities.length>0){
+            
+            const deleteSpecialitiesIds=specialities.filter(speciality =>speciality.isDelete) ;
+          
+            for(const speciality of deleteSpecialitiesIds){
+               await transaction.doctorSpecialist.deleteMany({
+           where:{
+            doctorId:updateDoctorInfo.id,
+           specialistId :speciality.specialitiesId,
+           }       
+        }) ;
+            } ;
+         }
+
+
+            const createSpecialitiesIds=specialities.filter(speciality =>!speciality.isDelete) ;
+
+            for(const speciality of createSpecialitiesIds){
+                 await transaction.doctorSpecialist.create({
+           data:{
+            doctorId:updateDoctorInfo.id,
+           specialistId :speciality.specialitiesId,
+           }       
+        }) ;
+            } ;
+
+         
+
+         });
+
+
+       
+       const result =await prisma.doctor.findUniqueOrThrow({
+        where:{
+            id:doctorId
+        },
+        include:{
+            doctorSpecialist:{
+                include:{
+                    spacialist:true
+                }
+            }
+        }
+       }) ;
+       
+     return result ;
+   } ;
+
 export const doctorServices={
     getAllDoctorData,
     getSingleDoctorData,
     deleteDoctorData,
-    softDeleteDoctorData
+    softDeleteDoctorData,
+    updateDoctorData
 } ;

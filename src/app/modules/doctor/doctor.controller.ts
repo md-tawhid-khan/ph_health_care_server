@@ -3,6 +3,7 @@ import catchAsync from "../../../shared/catchAsync";
 import { doctorServices } from "./doctor.services";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
+import { TAuthUser } from "../../interface/common";
 
 
 const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
@@ -15,7 +16,7 @@ const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
     }) ;
 }) ;
 
-const getSingleDoctorData=catchAsync(async(req:Request,res:Response)=>{
+const getSingleDoctorData=catchAsync(async(req:Request  ,res:Response)=>{
     
      const result=await doctorServices.getSingleDoctorData(req) ;
      sendResponse(res,{
@@ -46,10 +47,21 @@ const softDeleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
    }) ;
 }) ;
 
+const updateDoctorData=catchAsync(async(req:Request,res:Response)=>{
+    const result = await doctorServices.updateDoctorData(req) ;
+    sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:'update doctorData successfully',
+        data:result
+    })
+})
+
 export const doctorController={
     getAllDoctorData ,
     getSingleDoctorData,
     deleteDoctorData,
-    softDeleteDoctorData
+    softDeleteDoctorData,
+    updateDoctorData
 
 } ;

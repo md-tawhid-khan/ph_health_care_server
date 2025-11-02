@@ -13,4 +13,6 @@ router.delete('/:id',authTokenValidation(userRole.SUPER_ADMIN),doctorController.
 
 router.delete('/soft/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),doctorController.softDeleteDoctorData) ;
 
+router.patch('/update/:id',authTokenValidation(userRole.DOCTOR,userRole.SUPER_ADMIN),doctorController.updateDoctorData) ;
+
 export const doctorRouter=router ;
