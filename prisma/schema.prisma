@@ -71,7 +71,7 @@ model Doctor {
 model Patience {
   id String @id @default(uuid()) 
   patientHealthData PatientHealthData?
-  madicalReport MedicalReport[]
+  medicalReport MedicalReport[]
   name String
   email String @unique
   user User @relation(fields: [email],references: [email])

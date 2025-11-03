@@ -48,13 +48,39 @@ const whereCondition:Prisma.PatienceWhereInput={AND:addCondition} ;
     },
 include:{
     patientHealthData:true,
-    madicalReport:true
+    medicalReport:true
 }  
    }) ;
+
+   const totalData=await prisma.patience.count({
+    where:whereCondition
+   }) ;
    
-   return result ;
+   return {
+    meta:{page,limit,totalData},
+    data:result
+   } ;
 };
 
+const getSinglePatientData=async(params:string)=>{
+    const result=await prisma.patience.findUniqueOrThrow({
+        where:{
+            id:params 
+        },
+        include:{
+            patientHealthData:true,
+            medicalReport:true 
+        }
+    }) ;
+    return result ;
+} ;
+
+const updatePatientData=async()=>{
+    console.log(' update patient data ')
+}
+
 export const patientServices={
-    getAllPatientData
+    getAllPatientData,
+    getSinglePatientData,
+    updatePatientData
 }

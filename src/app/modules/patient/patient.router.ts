@@ -7,4 +7,8 @@ const router=Router();
 
 router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),patientController.getAllPatientData)
 
+router.get('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.PATIENT),patientController.getSinglePatientData)
+
+router.patch('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.PATIENT),)
+
 export const patientRouter=router ;

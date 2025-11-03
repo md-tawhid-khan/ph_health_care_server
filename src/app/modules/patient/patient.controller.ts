@@ -16,10 +16,25 @@ const getAllPatientData=catchAsync(async(req:Request,res:Response)=>{
     statusCode:status.OK,
     success:true,
     message:"get all patient data successfully",
-    data:result 
+    meta:result.meta,
+    data:result .data
  }) ;
 }) ;
 
+const getSinglePatientData=catchAsync(async(req:Request,res:Response)=>{
+    const params = req.params.id ;
+    
+    const result=await patientServices.getSinglePatientData(params) ;
+
+    sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:'get single patient data',
+        data:result
+    })
+})
+
 export const patientController={
-    getAllPatientData
+    getAllPatientData,
+    getSinglePatientData
 }
