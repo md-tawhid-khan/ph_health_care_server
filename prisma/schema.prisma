@@ -26,6 +26,7 @@ model User{
   admin Admin?
   doctor Doctor?
   patience Patience?
+  
   @@map("users")
 }
 
@@ -100,7 +101,7 @@ model PatientHealthData {
   dieteryPreference  Boolean
   pregnencyStatus  Boolean
   mentalHealthHistory String
-  immunizationStatus Boolean
+  immunizationStatus String
   hasPastSurgeries Boolean
   recentAnxiety  Boolean
   recentDepression Boolean

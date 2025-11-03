@@ -57,7 +57,7 @@ const getAllDoctorData=async(queryParams:any,options:any)=>{
         isDelete:false
      }) ;
 
- console.dir(addCondition,{depth:Infinity}) ;
+//  console.dir(addCondition,{depth:Infinity}) ;
 
 const whereCondition:Prisma.DoctorWhereInput={AND:addCondition} ;
 

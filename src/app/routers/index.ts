@@ -5,6 +5,7 @@ import { adminRouters } from "../modules/admin/adminRouters";
 import { authRouter } from "../modules/auth/authRouters";
 import { advertisementRouter } from "../modules/advertisement/advertisementRouter";
 import { doctorRouter } from '../modules/doctor/doctor.router';
+import { patientRouter } from '../modules/patient/patient.router';
 
 const router=Router()
 
@@ -32,6 +33,10 @@ const moduleRouter=[
     {
       path:'/doctor',
       route:doctorRouter
+    },
+    {
+      path:'/patient',
+      route:patientRouter
     }
 ] ;
 

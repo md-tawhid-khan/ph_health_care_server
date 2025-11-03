@@ -100,8 +100,8 @@ const createPatience=async(req:Request):Promise<Patience>=>{
    
     const result=await prisma.$transaction(async(transaction)=>{
         await transaction.user.create({data:userData});
-        const createDoctor=await transaction.patience.create({data:patienceData}) ;
-        return createDoctor ;
+        const createPatience=await transaction.patience.create({data:patienceData}) ;
+        return createPatience ;
     }
 )
    
