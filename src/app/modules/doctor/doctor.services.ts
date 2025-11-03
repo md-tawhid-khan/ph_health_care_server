@@ -1,14 +1,16 @@
+import { Specialitist } from './../../../../node_modules/.prisma/client/index.d';
 import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import { Prisma, userStatus } from "@prisma/client";
 import { TAuthUser } from "../../interface/common";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import { doctorSearchableField } from "./doctor.constant";
-import { object } from "zod";
 
 
-const getAllDoctorData=async(queryParams,options)=>{
-  const{searchTerm,...filterableField}=queryParams ;  
+
+const getAllDoctorData=async(queryParams:any,options:any)=>{
+
+  const{searchTerm,specialiies,...filterableField}=queryParams ;  
   const {page,limit,skip,sortBy,sortOrder}= paginationHelper.calculatePagination(options) ;
   
   const addCondition: Prisma.DoctorWhereInput[]= [] ;
@@ -36,15 +38,30 @@ const getAllDoctorData=async(queryParams,options)=>{
         })
      } ;
 
+     if(specialiies && specialiies.length>0){
+        addCondition.push({
+            doctorSpecialist:{
+                some:{
+                    specialist:{
+                        title:{
+                            contains:specialiies,
+                            mode:'insensitive'
+                        }
+                    }
+                }
+            }
+        })
+     } ;
+
      addCondition.push({
         isDelete:false
      }) ;
 
-//  console.dir(addCondition,{depth:Infinity}) ;
+ console.dir(addCondition,{depth:Infinity}) ;
 
 const whereCondition:Prisma.DoctorWhereInput={AND:addCondition} ;
 
-//  console.dir(whereCondition,{depth:Infinity}) ;
+
 
    const result=await prisma.doctor.findMany({
     where:whereCondition,
@@ -52,6 +69,14 @@ const whereCondition:Prisma.DoctorWhereInput={AND:addCondition} ;
     take:Number(limit),
     orderBy:{
        [sortBy]:sortOrder
+    },
+    include:{
+        doctorSpecialist:{
+            include:{
+                specialist:true,
+                
+            }
+        }
     }
    }) ;
   
