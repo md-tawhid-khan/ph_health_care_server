@@ -75,8 +75,60 @@ const getSinglePatientData=async(params:string)=>{
     return result ;
 } ;
 
-const updatePatientData=async()=>{
-    console.log(' update patient data ')
+const updatePatientData=async(patientId:string,updateData:any)=>{
+    const {medicalReport,patientHealthData,...patientData}=updateData ;
+      const patientInfo=await prisma.patience.findUniqueOrThrow({
+        where:{
+            id:patientId,
+            isDelete:false 
+        }
+      }) ;
+
+       await prisma.$transaction(async(transactionClient)=>{
+        if(patientData){
+               await transactionClient.patience.update({
+            where:{
+                id:patientInfo.id,
+                isDelete:false
+            },
+            data:patientData
+        }) ;
+        }
+       
+        
+      if(patientHealthData){
+         await transactionClient.patientHealthData.upsert({
+            where:{
+                patientId:patientInfo.id,               
+            },
+            update:patientHealthData,
+            create:{...patientHealthData,patientId:patientInfo.id}
+        }) ;
+      }
+
+        
+
+        if(medicalReport){
+            await transactionClient.medicalReport.create({
+            data:{...medicalReport,patientId:patientInfo.id}
+        }) ;
+       
+        }
+        
+      }) ;
+     
+
+      const updatedPatientInformation=await prisma.patience.findUniqueOrThrow({
+        where:{
+            id:patientInfo.id
+        },
+        include:{
+            patientHealthData:true,
+            medicalReport:true
+        }
+      }) ;
+
+      return updatedPatientInformation
 }
 
 export const patientServices={

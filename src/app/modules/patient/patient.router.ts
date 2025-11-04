@@ -9,6 +9,6 @@ router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),patientC
 
 router.get('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.PATIENT),patientController.getSinglePatientData)
 
-router.patch('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.PATIENT),)
+router.patch('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.PATIENT),patientController.updatePatientData)
 
 export const patientRouter=router ;
