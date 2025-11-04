@@ -2,6 +2,7 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helper/paginationHelper";
+import { TUpdatePatientData } from "./patient.interface";
 
 const getAllPatientData=async(queryParams:any,options:any)=>{
 
@@ -75,7 +76,7 @@ const getSinglePatientData=async(params:string)=>{
     return result ;
 } ;
 
-const updatePatientData=async(patientId:string,updateData:any)=>{
+const updatePatientData=async(patientId:string,updateData:TUpdatePatientData)=>{
     const {medicalReport,patientHealthData,...patientData}=updateData ;
       const patientInfo=await prisma.patience.findUniqueOrThrow({
         where:{
@@ -129,10 +130,49 @@ const updatePatientData=async(patientId:string,updateData:any)=>{
       }) ;
 
       return updatedPatientInformation
+} ;
+
+const deletePatientData=async(patientId:string)=>{
+    const patientInfo=await prisma.patience.findUniqueOrThrow({
+        where:{
+            id:patientId,
+        }
+    }) ;
+    
+    const result=await prisma.$transaction(async(transactionClient)=>{
+        await transactionClient.patientHealthData.delete({
+            where:{
+                patientId:patientInfo.id
+            }
+        }) ;
+      await transactionClient.medicalReport.deleteMany({
+            where:{
+                patientId:patientInfo.id
+            }
+        }) ;
+ 
+
+      const patientDelete= await transactionClient.patience.delete({
+            where:{
+                id:patientInfo.id
+            }
+        }) ;
+ 
+
+       await transactionClient.user.delete({
+            where:{
+                email:patientInfo.email
+            }
+        }) ;
+
+        return patientDelete ;
+    })
+ return result ;
 }
 
 export const patientServices={
     getAllPatientData,
     getSinglePatientData,
-    updatePatientData
+    updatePatientData,
+    deletePatientData
 }

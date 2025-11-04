@@ -5,10 +5,12 @@ import { userRole } from "@prisma/client";
 
 const router=Router();
 
-router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),patientController.getAllPatientData)
+router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),patientController.getAllPatientData) ;
 
-router.get('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.PATIENT),patientController.getSinglePatientData)
+router.get('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.PATIENT),patientController.getSinglePatientData) ;
 
-router.patch('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.PATIENT),patientController.updatePatientData)
+router.patch('/:id',authTokenValidation(userRole.SUPER_ADMIN,userRole.PATIENT),patientController.updatePatientData) ;
+
+router.delete('/:id',authTokenValidation(userRole.SUPER_ADMIN),patientController.deletePatientData) ;
 
 export const patientRouter=router ;
