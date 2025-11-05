@@ -5,6 +5,7 @@ import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 import { doctorFilterableField } from "./doctor.constant";
 import pick from "../../../shared/shared";
+import { TAuthUser } from "../../interface/common";
 
 
 
@@ -23,7 +24,7 @@ const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
     }) ;
 }) ;
 
-const getSingleDoctorData=catchAsync(async(req:Request  ,res:Response)=>{
+const getSingleDoctorData=catchAsync(async(req:Request ,res:Response)=>{
     
      const result=await doctorServices.getSingleDoctorData(req) ;
      sendResponse(res,{
