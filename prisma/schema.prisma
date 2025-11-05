@@ -64,6 +64,7 @@ model Doctor {
   createAt DateTime  @default(now())
   updateAt DateTime @updatedAt
   
+  doctorSchedule DoctorSchedule[]
   doctorSpecialist DoctorSpecialist[]
   @@map("doctors")
 } 
@@ -141,6 +142,29 @@ model DoctorSpecialist {
 
   @@id([specialistId,doctorId])
   @@map("doctorSpecialists")
+}
+
+model Schedule {
+  id String @id @default(uuid())
+  startDateTime DateTime 
+  endDateTime DateTime
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+doctorSchedule DoctorSchedule[] 
+  @@map("schedules")
+}
+
+model DoctorSchedule {
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId],references: [id])
+  scheduleId String 
+  schedule Schedule @relation(fields: [scheduleId],references: [id])
+  isBooked Boolean
+  appointmentId String?
+
+  @@id([doctorId,scheduleId])
+  @@map("doctorSchedules")
 }
 
 enum bloodGroup {
