@@ -10,4 +10,6 @@ router.post("/",authTokenValidation(userRole.SUPER_ADMIN,userRole.DOCTOR),doctor
 
 router.get("/my-schedule",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),doctorScheduleController.getDoctorSchedule) ;
 
+router.delete("/my-schedule/:scheduleId",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),doctorScheduleController.deleteDoctorSchedule) ;
+
 export const doctorScheduleRouter=router ;

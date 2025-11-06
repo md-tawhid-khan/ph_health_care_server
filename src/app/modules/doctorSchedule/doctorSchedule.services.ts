@@ -3,6 +3,8 @@ import { paginationHelper } from "../../../helper/paginationHelper";
 import prisma from "../../../shared/prisma";
 import { TAuthUser } from "../../interface/common";
 import { TAdminPagination } from "../../interface/pagination";
+import apiError from "../../errors/apiError";
+import status from "http-status";
 
 const createDoctorSchedule=async(user:any,payload:{scheduleIds:string[]})=>{
       const doctorInfo=await prisma.doctor.findUniqueOrThrow({
@@ -90,8 +92,39 @@ const whereCondition:Prisma.DoctorScheduleWhereInput={AND:addCondition} ;
    } ;
 };
 
+const deleteDoctorSchedule=async(user:any,scheduleId:any)=>{
+       const doctorInfo=await prisma.doctor.findUniqueOrThrow({
+        where:{
+          email:user.email,
+          isDelete:false 
+        }
+       });
+
+       const isBookedSchedule=await prisma.doctorSchedule.findFirst({
+        where:{
+          doctorId:doctorInfo.id,
+          scheduleId:scheduleId,
+          isBooked:true
+        }
+       }) ;
+if(isBookedSchedule){
+  throw new apiError(status.BAD_REQUEST," you have allready booked this schedule so do not delete it ") ;
+}
+     const result = await prisma.doctorSchedule.delete({
+      where:{
+        doctorId_scheduleId:{
+          doctorId:doctorInfo.id,
+          scheduleId:scheduleId
+        }
+      }
+     }) ;
+
+     return result ;
+} ;
+
 
 export const doctorScheduleServices={
     createDoctorSchedule,
-    getDoctorSchedule
+    getDoctorSchedule,
+    deleteDoctorSchedule
 } ;
