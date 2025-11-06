@@ -134,8 +134,19 @@ const getDoctorSchedule=await prisma.doctorSchedule.findMany({
    } ;
 };
 
+const getSingleSchedule=async(user:any,scheduleId:any)=>{
+       const result=await prisma.schedule.findUniqueOrThrow({
+         where:{
+            id:scheduleId
+         }
+       }) ;
+
+       return result ;
+}
+
 
 export const scheduleService={
     createSchedule,
-    getAllSchedule
+    getAllSchedule,
+    getSingleSchedule
 }

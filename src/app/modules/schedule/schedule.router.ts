@@ -9,4 +9,6 @@ router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.
 
 router.post("/create-schedule",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),scheduleController.createSchedule) ;
 
+router.get("/:id",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),scheduleController.getSingleSchedule) ;
+
 export const scheduleRouter = router ;

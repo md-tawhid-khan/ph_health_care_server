@@ -30,7 +30,22 @@ const getAllSchedule=catchAsync(async(req:Request & {user?:TAuthUser},res:Respon
      }) ;
 }) ;
 
+const getSingleSchedule=catchAsync(async(req:Request,res:Response)=>{
+    const user =req.user ;
+    const scheduleId=req.params.id ;
+
+    const result=await scheduleService.getSingleSchedule(user,scheduleId) ;
+
+    sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:"get all schedule successfully",
+        data:result
+     }) ;
+})
+
 export const scheduleController ={
     createSchedule,
-    getAllSchedule
+    getAllSchedule,
+    getSingleSchedule
 }
