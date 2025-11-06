@@ -5,6 +5,8 @@ import { scheduleController } from "./schedule.controller";
 
 const router=Router() ;
 
+router.get('/',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),scheduleController.getAllSchedule) ;
+
 router.post("/create-schedule",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),scheduleController.createSchedule) ;
 
 export const scheduleRouter = router ;

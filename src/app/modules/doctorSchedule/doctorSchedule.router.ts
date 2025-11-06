@@ -5,6 +5,9 @@ import { userRole } from "@prisma/client";
 
 
 const router=Router();
+
 router.post("/",authTokenValidation(userRole.SUPER_ADMIN,userRole.DOCTOR),doctorScheduleController.createDoctorSchedule) ;
+
+router.get("/my-schedule",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),doctorScheduleController.getDoctorSchedule) ;
 
 export const doctorScheduleRouter=router ;
