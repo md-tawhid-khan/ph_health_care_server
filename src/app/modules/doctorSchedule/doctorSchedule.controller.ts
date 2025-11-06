@@ -6,6 +6,18 @@ import status from "http-status";
 import { TAuthUser } from "../../interface/common";
 import pick from "../../../shared/shared";
 
+const getAllDoctorSchedule=catchAsync(async(req,res)=>{
+    const queryParams=pick(req.query,["name","email",'isBooked','searchTerm'])
+    const options=pick(req.query,["page","limit","sortBy","sortOrder"]) ;
+    const result=await doctorScheduleServices.getAllDoctorSchedule(queryParams,options);
+     sendResponse(res,{
+        statusCode:status.OK,
+        success:true,
+        message:"get allschedule data successfully",
+        data:result
+     }) ;
+})
+
 const createDoctorSchedule=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
   
     const result = await doctorScheduleServices.createDoctorSchedule(req?.user,req.body) ;
@@ -46,4 +58,5 @@ export const doctorScheduleController={
   createDoctorSchedule  ,
   getDoctorSchedule ,
   deleteDoctorSchedule,
+  getAllDoctorSchedule
 }

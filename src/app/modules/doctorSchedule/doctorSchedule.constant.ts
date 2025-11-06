@@ -1,0 +1,1 @@
+export const doctorScheduleSearchableField=['name','email','contactNo','address','designation']

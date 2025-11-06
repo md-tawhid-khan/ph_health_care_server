@@ -5,6 +5,123 @@ import { TAuthUser } from "../../interface/common";
 import { TAdminPagination } from "../../interface/pagination";
 import apiError from "../../errors/apiError";
 import status from "http-status";
+import { doctorScheduleSearchableField } from "./doctorSchedule.constant";
+
+const getAllDoctorSchedule=async(queryParams:any,options:any)=>{
+  const {searchTerm,isBooked,...filterableField}=queryParams ;
+    const {page,limit,skip,sortOrder,sortBy} =paginationHelper.calculatePagination(options);
+
+const addCondition: Prisma.DoctorScheduleWhereInput[]= [] ;
+
+  const doctorSearchField=doctorScheduleSearchableField ;
+  
+  if(searchTerm){
+    addCondition.push({
+        OR:doctorSearchField.map(field=>({
+            [field]:{
+                contains:searchTerm ,
+                mode:'insensitive'
+        }
+     } )) 
+    }) ;
+  } ;
+
+  if(Object.keys(filterableField).length>0){
+   
+        addCondition.push({
+            AND:Object.keys(filterableField).map(field=>({
+                [field]:{
+                    equals:filterableField[field]
+                }
+            }))
+        })
+     } ;
+if(queryParams.isBooked){
+   if(typeof isBooked==='string' && isBooked === 'true'){
+     queryParams.isBooked=true ;
+    }
+    else if(typeof isBooked==='string' && isBooked==='false'){
+    queryParams.isBooked=false
+   }
+  
+} ;
+ 
+       
+     const whereCondition:Prisma.DoctorScheduleWhereInput={AND:addCondition} ;
+
+
+    //  console.dir(addCondition,{depth:'infinity'}) ;
+   
+ 
+ let result = await prisma.doctorSchedule.findMany({
+  skip,
+  take:Number(limit)
+ }) ;
+ let totalData= await prisma.doctorSchedule.count() ;
+
+  if(isBooked){
+     result = await prisma.doctorSchedule.findMany({
+    where:{
+      isBooked:queryParams.isBooked ,        
+    },   
+  }) ;
+  totalData= await prisma.doctorSchedule.count({
+    where:{
+      isBooked:queryParams.isBooked ,        
+    }, 
+   })
+  }
+
+  if(addCondition.length>0) {
+
+    result = await prisma.doctorSchedule.findMany({
+    where:{
+      doctor:whereCondition ,        
+    },
+    
+  });
+
+  totalData= await prisma.doctorSchedule.count({
+    where:{
+      isBooked:queryParams.isBooked ,        
+    }, 
+   })
+
+} ;
+
+  if(isBooked && addCondition.length>0){
+    result=await prisma.doctorSchedule.findMany({
+      where:{
+        doctor:whereCondition
+      },
+      skip,
+      take:Number(limit),
+      orderBy:{
+        [sortBy]:sortOrder
+      }
+    }) ;
+    totalData= await prisma.doctorSchedule.count({
+    where:{
+      isBooked:queryParams.isBooked ,        
+    }, 
+   });
+
+   
+    
+
+  } ;
+
+
+
+  return {
+    meta:{
+        page,
+        limit,
+        totalData
+    },
+    data:result
+  } ;
+} ;
 
 const createDoctorSchedule=async(user:any,payload:{scheduleIds:string[]})=>{
       const doctorInfo=await prisma.doctor.findUniqueOrThrow({
@@ -126,5 +243,6 @@ if(isBookedSchedule){
 export const doctorScheduleServices={
     createDoctorSchedule,
     getDoctorSchedule,
-    deleteDoctorSchedule
+    deleteDoctorSchedule,
+    getAllDoctorSchedule
 } ;
