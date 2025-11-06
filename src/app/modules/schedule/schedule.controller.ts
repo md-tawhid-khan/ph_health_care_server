@@ -30,7 +30,7 @@ const getAllSchedule=catchAsync(async(req:Request & {user?:TAuthUser},res:Respon
      }) ;
 }) ;
 
-const getSingleSchedule=catchAsync(async(req:Request,res:Response)=>{
+const getSingleSchedule=catchAsync(async(req:Request & {user?:TAuthUser},res:Response)=>{
     const user =req.user ;
     const scheduleId=req.params.id ;
 
@@ -39,13 +39,25 @@ const getSingleSchedule=catchAsync(async(req:Request,res:Response)=>{
     sendResponse(res,{
         statusCode:status.OK,
         success:true,
-        message:"get all schedule successfully",
+        message:"get single schedule successfully",
         data:result
      }) ;
-})
+}) ;
+
+const deleteSchedule=catchAsync(async(req:Request,res:Response)=>{
+    const scheduleId=req.params.id ;
+   const result=await scheduleService.deleteSchedule(scheduleId) ;
+   sendResponse(res,{
+    statusCode:status.OK,
+    success:true,
+    message:'delete schedule data successfully',
+    data:result
+   }) ;
+})  ;
 
 export const scheduleController ={
     createSchedule,
     getAllSchedule,
-    getSingleSchedule
+    getSingleSchedule,
+    deleteSchedule
 }

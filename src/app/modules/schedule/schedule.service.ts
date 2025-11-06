@@ -142,11 +142,23 @@ const getSingleSchedule=async(user:any,scheduleId:any)=>{
        }) ;
 
        return result ;
-}
+ } ;
+
+ const deleteSchedule=async(scheduleId:string)=>{
+   
+      const result = await prisma.schedule.delete({
+        where: {
+            id:scheduleId,
+        },
+    });
+    return result;
+    
+ } ;
 
 
 export const scheduleService={
     createSchedule,
     getAllSchedule,
-    getSingleSchedule
+    getSingleSchedule,
+    deleteSchedule
 }

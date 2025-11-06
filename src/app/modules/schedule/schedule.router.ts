@@ -11,4 +11,6 @@ router.post("/create-schedule",authTokenValidation(userRole.SUPER_ADMIN,userRole
 
 router.get("/:id",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),scheduleController.getSingleSchedule) ;
 
+router.delete("/:id",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),scheduleController.deleteSchedule)  ;
+
 export const scheduleRouter = router ;
