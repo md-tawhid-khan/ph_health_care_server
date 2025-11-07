@@ -66,13 +66,13 @@ model Doctor {
   
   doctorSchedule DoctorSchedule[]
   doctorSpecialist DoctorSpecialist[]
+  appointment Appointment[]
   @@map("doctors")
 } 
 
 model Patience {
   id String @id @default(uuid()) 
-  patientHealthData PatientHealthData?
-  medicalReport MedicalReport[]
+  
   name String
   email String @unique
   user User @relation(fields: [email],references: [email])
@@ -83,6 +83,9 @@ model Patience {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
+ patientHealthData PatientHealthData?
+  medicalReport MedicalReport[]
+  appointment Appointment[]
   @@map("patiencs")
 } 
 
@@ -151,7 +154,8 @@ model Schedule {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-doctorSchedule DoctorSchedule[] 
+   doctorSchedule DoctorSchedule[] 
+   appointment Appointment?
   @@map("schedules")
 }
 
@@ -165,6 +169,24 @@ model DoctorSchedule {
 
   @@id([doctorId,scheduleId])
   @@map("doctorSchedules")
+}
+
+model Appointment {
+    id String @id @default(uuid())
+    doctorId String
+    doctor Doctor @relation(fields: [doctorId],references: [id])
+    patientId String
+    patient Patience @relation(fields: [patientId],references: [id])
+    scheduleId String @unique
+    schedule Schedule @relation(fields: [scheduleId],references: [id])
+    vedioCallingId String
+    status AppointmentStatus @default(SCHEDULE)
+    paymentStatus PaymentStatus @default(UNPAID)
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+
+    @@map("appointments")
+
 }
 
 enum bloodGroup {
@@ -199,4 +221,16 @@ enum gender {
 enum maritalStatus {
   MARRIED
   UNMARRIED
+}
+
+enum AppointmentStatus {
+  SCHEDULE 
+  INPROGRESS 
+  COMPLETED 
+  CANCELED
+}
+
+enum PaymentStatus {
+   PAID 
+   UNPAID
 }

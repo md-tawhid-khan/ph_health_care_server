@@ -26,7 +26,7 @@ const getAllDoctorData=catchAsync(async(req:Request,res:Response)=>{
 
 const getSingleDoctorData=catchAsync(async(req:Request ,res:Response)=>{
     
-     const result=await doctorServices.getSingleDoctorData(req) ;
+     const result=await doctorServices.getSingleDoctorData(req as Request & {user:TAuthUser} ) ;
      sendResponse(res,{
         statusCode:status.OK,
         success:true,
@@ -36,7 +36,7 @@ const getSingleDoctorData=catchAsync(async(req:Request ,res:Response)=>{
 }) ;
 
 const deleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
-     const result = await doctorServices.deleteDoctorData(req) ;
+     const result = await doctorServices.deleteDoctorData(req as Request & {user:TAuthUser}) ;
      sendResponse(res,{
         statusCode:status.OK,
         success:true,
@@ -46,7 +46,7 @@ const deleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
 }) ;
 
 const softDeleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
- const result=await doctorServices.softDeleteDoctorData(req);
+ const result=await doctorServices.softDeleteDoctorData(req as Request & {user:TAuthUser});
  sendResponse(res,{
     statusCode:status.OK,
     success:true,
@@ -56,7 +56,7 @@ const softDeleteDoctorData=catchAsync(async(req:Request,res:Response)=>{
 }) ;
 
 const updateDoctorData=catchAsync(async(req:Request,res:Response)=>{
-    const result = await doctorServices.updateDoctorData(req) ;
+    const result = await doctorServices.updateDoctorData(req as Request & {user:TAuthUser}) ;
     sendResponse(res,{
         statusCode:status.OK,
         success:true,

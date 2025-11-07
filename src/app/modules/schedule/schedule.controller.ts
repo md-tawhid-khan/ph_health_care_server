@@ -46,7 +46,7 @@ const getSingleSchedule=catchAsync(async(req:Request & {user?:TAuthUser},res:Res
 
 const deleteSchedule=catchAsync(async(req:Request,res:Response)=>{
     const scheduleId=req.params.id ;
-   const result=await scheduleService.deleteSchedule(scheduleId) ;
+   const result=await scheduleService.deleteSchedule(scheduleId as string) ;
    sendResponse(res,{
     statusCode:status.OK,
     success:true,

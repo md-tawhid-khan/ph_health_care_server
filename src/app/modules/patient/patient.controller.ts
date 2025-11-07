@@ -24,7 +24,7 @@ const getAllPatientData=catchAsync(async(req:Request,res:Response)=>{
 const getSinglePatientData=catchAsync(async(req:Request,res:Response)=>{
     const params = req.params.id ;
     
-    const result=await patientServices.getSinglePatientData(params) ;
+    const result=await patientServices.getSinglePatientData(params as string) ;
 
     sendResponse(res,{
         statusCode:status.OK,
