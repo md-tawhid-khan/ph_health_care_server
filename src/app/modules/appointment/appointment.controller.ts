@@ -5,9 +5,10 @@ import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 import { TAuthUser } from "../../interface/common";
 
-const createAppointment=catchAsync(async(req:Request ,res:Response)=>{
-    
- const result=await appointmentServices.createAppointment(req as any) ;
+const createAppointment=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
+    const user=req.user ;
+    const payload=req.body ;
+ const result=await appointmentServices.createAppointment(user as TAuthUser,payload) ;
 
  sendResponse(res,{
     statusCode:status.OK,
