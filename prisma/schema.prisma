@@ -185,7 +185,22 @@ model Appointment {
     createAt DateTime @default(now())
     updateAt DateTime @updatedAt
 
+    payment Payment?
+
     @@map("appointments")
+
+}
+
+model Payment {
+  id String @id @default(uuid())
+  appointmentId String @unique
+  apppointment Appointment @relation(fields: [appointmentId],references: [id])
+  amount Float
+  transactionId String
+  status PaymentStatus @default(UNPAID)
+  paymentGatewayData Json ?
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 
 }
 

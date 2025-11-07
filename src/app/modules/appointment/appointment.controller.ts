@@ -4,6 +4,7 @@ import { appointmentServices } from "./appointment.services";
 import sendResponse from "../../../shared/sendResponse";
 import status from "http-status";
 import { TAuthUser } from "../../interface/common";
+import pick from "../../../shared/shared";
 
 const createAppointment=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
     const user=req.user ;
@@ -18,7 +19,26 @@ const createAppointment=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Re
  }) ;
 }) ;
 
+const getMyAppointment=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Response)=>{
+   
+    const user=req.user ;
+   
+    const queryParams=pick(req.query,['status','paymentStatus']) ;
+   
+    const options=pick(req.query,['page','limit','sortBy','sortOrder']) ;
+   
+ const result=await appointmentServices.getMyAppointment(user,queryParams,options) ;
+
+ sendResponse(res,{
+    statusCode:status.OK,
+    success:true,
+    message:"get my appointment successfully",
+    data:result
+ }) ;
+}) ;
+
 
 export const appointmentController={
-    createAppointment
+    createAppointment,
+    getMyAppointment
 } ;

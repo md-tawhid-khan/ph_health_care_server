@@ -7,4 +7,6 @@ const router=Router() ;
 
 router.post("/create-appointment",authTokenValidation(userRole.PATIENT),appointmentController.createAppointment) ;
 
+router.get("/my-appointment",authTokenValidation(userRole.PATIENT,userRole.DOCTOR),appointmentController.getMyAppointment) ;
+
 export const appointmentRouter=router ;

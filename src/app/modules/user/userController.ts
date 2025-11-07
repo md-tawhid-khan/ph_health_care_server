@@ -49,7 +49,7 @@ const createPatience=catchAsync(async(req:Request,res:Response)=>{
     sendResponse(res,{
         statusCode:status.OK,
         success:true,
-        message:'doctor create successfully',
+        message:'patient create successfully',
         data:result 
     })
 }
