@@ -67,6 +67,9 @@ model Doctor {
   doctorSchedule DoctorSchedule[]
   doctorSpecialist DoctorSpecialist[]
   appointment Appointment[]
+  prescription Prescription[]
+ review Reviews[]
+
   @@map("doctors")
 } 
 
@@ -86,6 +89,9 @@ model Patience {
  patientHealthData PatientHealthData?
   medicalReport MedicalReport[]
   appointment Appointment[]
+  prescription Prescription[]
+  review Reviews[]
+
   @@map("patiencs")
 } 
 
@@ -186,6 +192,8 @@ model Appointment {
     updateAt DateTime @updatedAt
 
     payment Payment?
+    prescription Prescription?
+    review Reviews?
 
     @@map("appointments")
 
@@ -202,6 +210,39 @@ model Payment {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
+}
+
+model Prescription {
+  id String @id @default(uuid())
+  patientId String
+  patient Patience @relation(fields: [patientId],references: [id])
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId],references: [id])
+  appointmentId String @unique
+  appointment Appointment @relation(fields: [appointmentId],references: [id])
+  instruction String
+  followUpDate DateTime?
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@map("prescriptions")
+
+}
+
+model Reviews {
+  id String @id @default(uuid())
+  appointmentId String @unique
+  appointment Appointment @relation(fields: [appointmentId],references: [id])
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId],references: [id])
+  patientId String
+  patient Patience @relation(fields: [patientId],references: [id])
+  rating Float
+  comment String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@map("reviews")
 }
 
 enum bloodGroup {

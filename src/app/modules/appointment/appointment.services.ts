@@ -143,6 +143,9 @@ return {
    } ;
 } ;
 
+// get all appointment for admin and super admin 
+// endPoint ("/appointment")
+
 export const appointmentServices={
     createAppointment,
     getMyAppointment
