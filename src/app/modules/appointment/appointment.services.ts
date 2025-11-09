@@ -1,4 +1,4 @@
-import { Keys, SortOrder } from './../../../../generated/prisma/internal/prismaNamespace';
+
 import prisma from "../../../shared/prisma";
 import { TAuthUser } from "../../interface/common";
 import { v4 as uuidv4 } from 'uuid';
@@ -146,7 +146,49 @@ return {
 // get all appointment for admin and super admin 
 // endPoint ("/appointment")
 
+const getAllAppointment=async(queryParams:any,options:any)=>{
+   
+    const {...filterData}=queryParams ;
+    
+    const {page,limit,skip,sortBy,sortOrder}=paginationHelper.calculatePagination( options) ;
+
+   const addCondition:Prisma.AppointmentWhereInput[]=[]
+
+  
+
+   if(Object.keys(filterData).length>0){
+       addCondition.push({
+        AND:Object.keys(filterData).map(field=>({
+            [field]:{
+                equals:filterData[field]
+            }
+        }))
+       })
+   } ;
+
+const whereCondition:Prisma.AppointmentWhereInput=addCondition?.length>0?{AND:addCondition} : {} ;
+
+    const result = await prisma.appointment.findMany({
+        where:whereCondition,
+        skip,
+        take:Number(limit),
+        orderBy:{
+            [sortBy]:sortOrder
+        }
+    }) ;
+    const totalData=await prisma.appointment.count({
+        where:whereCondition,
+    })
+    return {
+       meta:{ page,
+        limit,
+        totalData,},
+        data:result 
+    }
+}
+
 export const appointmentServices={
     createAppointment,
-    getMyAppointment
+    getMyAppointment,
+    getAllAppointment
 }

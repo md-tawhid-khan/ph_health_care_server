@@ -37,8 +37,20 @@ const getMyAppointment=catchAsync(async(req:Request & {user?:TAuthUser} ,res:Res
  }) ;
 }) ;
 
+const getAllAppointment=catchAsync(async(req,res)=>{
+   const queryParams=pick(req.query,['status','paymentStatus']) ;
+   const options=pick(req.query,['page','limit','sortBy','sortOrder']) ;
+   const result=await appointmentServices.getAllAppointment(queryParams,options) ;
+    sendResponse(res,{
+    statusCode:status.OK,
+    success:true,
+    message:"get all appointment successfully",
+    data:result
+ }) ;
+})
 
 export const appointmentController={
     createAppointment,
-    getMyAppointment
+    getMyAppointment,
+    getAllAppointment
 } ;
