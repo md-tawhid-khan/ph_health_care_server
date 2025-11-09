@@ -11,4 +11,6 @@ router.get("/my-appointment",authTokenValidation(userRole.PATIENT,userRole.DOCTO
 
 router.get("/",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),appointmentController.getAllAppointment) ;
 
+router.patch('/change-status/:appointmentId',authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN,userRole.DOCTOR),appointmentController.changeAppointmentStatus) ;
+
 export const appointmentRouter=router ;

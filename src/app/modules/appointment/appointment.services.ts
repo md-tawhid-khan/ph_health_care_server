@@ -1,9 +1,11 @@
+import { status } from 'http-status';
 
 import prisma from "../../../shared/prisma";
 import { TAuthUser } from "../../interface/common";
 import { v4 as uuidv4 } from 'uuid';
-import { Prisma, userRole } from '@prisma/client';
+import { AppointmentStatus, Prisma, userRole } from '@prisma/client';
 import { paginationHelper } from '../../../helper/paginationHelper';
+import apiError from '../../errors/apiError';
 
 type TPayload={
     doctorId:string,
@@ -185,10 +187,40 @@ const whereCondition:Prisma.AppointmentWhereInput=addCondition?.length>0?{AND:ad
         totalData,},
         data:result 
     }
+} ;
+
+const changeAppointmentStatus=async(appointmentId:string,payload:{status:AppointmentStatus},user:TAuthUser)=>{
+    const appointmentData=await prisma.appointment.findFirstOrThrow({
+        where:{
+            id:appointmentId
+        },
+        include:{
+            doctor:true
+        }
+    }) ;
+
+    if(user?.role===userRole.DOCTOR){
+        if(!(user?.email === appointmentData.doctor.email)){
+            throw new apiError(status.BAD_REQUEST,'This is not your appointment') ;
+        }
+    }
+   
+    const result = await prisma.appointment.update({
+        where:{
+            id:appointmentData.id
+        },
+        data:{
+            status:payload.status
+        }
+    }) ;
+
+    return result ;
+
 }
 
 export const appointmentServices={
     createAppointment,
     getMyAppointment,
-    getAllAppointment
+    getAllAppointment,
+    changeAppointmentStatus
 }
