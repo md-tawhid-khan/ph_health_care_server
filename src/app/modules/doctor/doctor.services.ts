@@ -67,9 +67,11 @@ const whereCondition:Prisma.DoctorWhereInput={AND:addCondition} ;
     where:whereCondition,
     skip ,
     take:Number(limit),
-    orderBy:{
+    orderBy:sortBy && sortOrder 
+    ? {
        [sortBy]:sortOrder
-    },
+    } 
+    : { averageRating : 'desc' },
     include:{
         doctorSpecialist:{
             include:{
