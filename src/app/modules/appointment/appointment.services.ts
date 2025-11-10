@@ -3,7 +3,7 @@ import { status } from 'http-status';
 import prisma from "../../../shared/prisma";
 import { TAuthUser } from "../../interface/common";
 import { v4 as uuidv4 } from 'uuid';
-import { AppointmentStatus, Prisma, userRole } from '@prisma/client';
+import { AppointmentStatus, PaymentStatus, Prisma, userRole } from '@prisma/client';
 import { paginationHelper } from '../../../helper/paginationHelper';
 import apiError from '../../errors/apiError';
 
@@ -68,7 +68,7 @@ const createAppointment=async(user:TAuthUser,payload:TPayload )=>{
    const today=new Date() ;
 
   const transactionId="ph-health-"+today.getFullYear()+"_"+today.getMonth()+"_"+today.getDay()+"_"+today.getHours()+"_"+today.getMinutes()+"_"+today.getSeconds() ;
-    console.log(transactionId) ;
+    // console.log(transactionId) ;
    await tx.payment.create({
      data:{
         appointmentId:appointmentData.id,
@@ -216,11 +216,61 @@ const changeAppointmentStatus=async(appointmentId:string,payload:{status:Appoint
 
     return result ;
 
-}
+} ;
+
+const cancelledUnPaidAppointment=async()=>{
+  const thirtyMinutesAgo=new Date(Date.now()-(3*60*1000));
+
+  const unpaidAppointments=await prisma.appointment.findMany({
+    where:{
+        createAt:{
+            lte:thirtyMinutesAgo,          
+        },
+         paymentStatus:PaymentStatus.UNPAID
+    }
+  })
+
+  const appointmentIdsToCancel=unpaidAppointments.map(appointment=>appointment.id)
+
+  await prisma.$transaction(async(tx)=>{
+      await tx.payment.deleteMany({
+        where:{
+            appointmentId:{
+                in:appointmentIdsToCancel
+            }
+        }
+      }) ;
+
+      await tx.appointment.deleteMany({
+        where:{
+            id:{
+                in:appointmentIdsToCancel
+            }
+        }
+      }) ;
+    
+      for(const unpaidAppointment of unpaidAppointments){
+        await tx.doctorSchedule.updateMany({
+        where:{
+           doctorId:unpaidAppointment.doctorId,
+           scheduleId:unpaidAppointment.scheduleId
+        },
+        data:{
+            isBooked:false
+        }
+      }) ;
+      }
+
+  }) 
+
+  console.log("unpaid appointment deleted successfully") ;
+  
+} 
 
 export const appointmentServices={
     createAppointment,
     getMyAppointment,
     getAllAppointment,
-    changeAppointmentStatus
+    changeAppointmentStatus,
+    cancelledUnPaidAppointment
 }
