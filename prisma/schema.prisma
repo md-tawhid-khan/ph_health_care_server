@@ -60,15 +60,14 @@ model Doctor {
   currentWorkingPlace String
   designation String
   isDelete Boolean @default(false)
-  averageRating Float
+  averageRating Float @default(0.0)
   createAt DateTime  @default(now())
-  updateAt DateTime @updatedAt
-  
+  updateAt DateTime @updatedAt 
   doctorSchedule DoctorSchedule[]
   doctorSpecialist DoctorSpecialist[]
   appointment Appointment[]
   prescription Prescription[]
- review Reviews[]
+  review Reviews[]
 
   @@map("doctors")
 } 
@@ -99,7 +98,6 @@ model PatientHealthData {
   id String @id @default(uuid())
   patientId String @unique
   patient Patience @relation(fields: [patientId],references: [id])
-
   dateOfBirth String
   gender gender
   bloodGroup bloodGroup

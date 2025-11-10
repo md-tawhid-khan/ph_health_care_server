@@ -22,7 +22,8 @@ const createReviews=async(user : TAuthUser,payload:any)=>{
 
   } ;
 
-  const result = await prisma.reviews.create({
+  const result= await prisma.$transaction(async(tx)=>{
+             const result = await tx.reviews.create({
     data:{
         patientId:appointmentData.patientId,
         doctorId:appointmentData.doctorId,
@@ -31,9 +32,32 @@ const createReviews=async(user : TAuthUser,payload:any)=>{
         comment:payload.comment 
     }
   })  ;
+
+const avarageRating= await tx.reviews.aggregate({
+    _avg:{
+        rating:true
+    }
+}) ;
+
+await tx.doctor.update({
+    where:{
+        id:appointmentData.doctorId
+    },
+    data:{
+        averageRating:avarageRating._avg.rating as number
+    }
+}) ;
+
+return result ;
+
+  })
+
+
       
       return result ;
 } ;
+
+
 
 const getAllReviews=async(queryParams:any,options:any)=>{
 
