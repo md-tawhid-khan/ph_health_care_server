@@ -12,6 +12,7 @@ import { appointmentRouter } from '../modules/appointment/appointment.router';
 import { paymentRouter } from '../modules/payment/payment.router';
 import { prescriptionRouter } from '../modules/prescription/prescription.router.';
 import { reviewsRouter } from '../modules/reviews/reviews.router';
+import { metaRouter } from '../modules/meta/meta.router';
 
 const router=Router()
 
@@ -67,6 +68,10 @@ const moduleRouter=[
     {
       path:'/reviews',
       route:reviewsRouter
+    },
+    {
+      path:'/meta',
+      route:metaRouter
     }
 ] ;
 
