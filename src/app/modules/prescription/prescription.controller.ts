@@ -24,7 +24,7 @@ const getPatientPrescription=catchAsync(async(req:Request & {user?:TAuthUser},re
     const user=req.user
 
     const options=pick(req.query,['limit','page','sortBy','sortOrder']) ;
-    const result=await prescriptionServices.getPatientPrescription(user ,options) ;
+    const result=await prescriptionServices.getPatientPrescription(user as TAuthUser ,options) ;
     sendResponse(res,{
         statusCode:status.OK,
         success:true,
