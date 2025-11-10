@@ -6,4 +6,6 @@ import { reviewsController } from "./reviews.controller";
 const router=Router();
 router.post("/create-reviews",authTokenValidation(userRole.PATIENT),reviewsController.createReviews) ;
 
+router.post("/",authTokenValidation(userRole.SUPER_ADMIN,userRole.ADMIN),reviewsController.getAllReviews) ;
+
 export const reviewsRouter= router ;

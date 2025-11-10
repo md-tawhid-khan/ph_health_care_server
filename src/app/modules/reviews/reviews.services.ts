@@ -2,6 +2,8 @@ import status from "http-status";
 import prisma from "../../../shared/prisma";
 import apiError from "../../errors/apiError";
 import { TAuthUser } from "../../interface/common";
+import { paginationHelper } from "../../../helper/paginationHelper";
+import { Prisma } from "@prisma/client";
 
 const createReviews=async(user : TAuthUser,payload:any)=>{
    const patientData=await prisma.patience.findUniqueOrThrow({
@@ -33,6 +35,53 @@ const createReviews=async(user : TAuthUser,payload:any)=>{
       return result ;
 } ;
 
+const getAllReviews=async(queryParams:any,options:any)=>{
+
+   
+    const {page,skip,limit,sortBy,sortOrder}=paginationHelper.calculatePagination(options) ;
+    
+    
+
+    const result=await prisma.reviews.findMany({
+        where:{
+            OR:[
+               { doctor:{
+                   email:queryParams.email
+                }}
+            ]
+        },
+        skip,
+        take:Number(limit),
+        orderBy:{
+            [sortBy]:sortOrder
+        },
+        include:{
+            doctor:true
+        }
+    }) ;
+
+    const totalData=await prisma.reviews.count({
+         where:{
+            OR:[
+               { doctor:{
+                   email:queryParams.email
+                }},
+               { patient:{
+                   email:queryParams.email
+                }}
+            ]
+        },
+    })
+
+   return {
+    meta:{
+      page,limit,totalData
+    },
+    data:result
+} ;
+}
+
 export const reviewsServices={
-    createReviews
+    createReviews,
+    getAllReviews
 }
