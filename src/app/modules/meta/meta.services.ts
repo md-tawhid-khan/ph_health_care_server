@@ -1,3 +1,4 @@
+import { TAuthUser } from './../../interface/common';
 import { userRole } from "@prisma/client";
 import { TAuthUser } from "../../interface/common";
 import prisma from "../../../shared/prisma";
@@ -12,7 +13,7 @@ const fetchDashboardMetaData=async(user:TAuthUser)=>{
         getAdminMetaData()  
         break ;
     case userRole.DOCTOR :
-        getDoctorMetaData() 
+        getDoctorMetaData(user) 
         break ;
     case userRole.PATIENT :
         getPatientMetaData()
@@ -40,8 +41,53 @@ const getAdminMetaData=async()=>{
     console.log({totalAppointmentCount,totalDoctorCount,totalPatientCount,totalPaymentCount,totalRevenue}) ;
 
 }
-const getDoctorMetaData=()=>{
-    console.log('doctor meta data');
+const getDoctorMetaData=async(user:TAuthUser)=>{
+    const doctorInfo=await prisma.doctor.findUniqueOrThrow({
+        where:{
+            email:user.email
+        }
+    }) ;
+    
+    const totalAppointmentCount= await prisma.appointment.count();
+    const totalPatientCount = await prisma.appointment.groupBy({
+        by:['patientId'],
+        _count:{
+            id:true
+        }
+    }) ;
+
+    const reviewsCount= await prisma.reviews.count({
+           where:{
+            doctorId:doctorInfo.id
+           }
+    })
+
+    const doctorTotalRevinue= await prisma.payment.aggregate({
+        _sum:{
+            amount:true
+        } ,
+        where:{
+            apppointment:{
+                doctorId:doctorInfo.id
+            }
+        }
+    }) ;
+
+    const appointmentStatusDistribution = await prisma.appointment.groupBy({
+       by:['status'] ,
+       _count:{id:true},
+       where:{
+        doctorId:doctorInfo.id
+       }
+    })
+
+    const formattedAppointmentStatusDistribution = appointmentStatusDistribution.map((count)=>({
+        status:count.status,
+        count:Number(count._count.id)
+    }))
+
+    console.log(formattedAppointmentStatusDistribution) ;
+    
 }
 const getPatientMetaData=()=>{
     console.log('patient meta data');
