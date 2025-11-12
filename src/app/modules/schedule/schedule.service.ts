@@ -6,6 +6,11 @@ import { paginationHelper } from "../../../helper/paginationHelper";
 import { TAuthUser } from "../../interface/common";
 import { TAdminPagination } from "../../interface/pagination";
 
+const convertDateTime= async(date:Date)=>{
+   const offset= date.getTimezoneOffset() * 60000 ;
+   return new Date( date.getTime()+ offset) ;
+}
+
 const createSchedule=async(payload : TSchedule):Promise<Schedule[]>=>{
    
 const {startDate,endDate,startTime,endTime}=payload ;
@@ -29,19 +34,28 @@ while(currentDate<=lastDate){
        )
 
 
-    
-
      while(startDateTime < endDateTime){
-         
+
+       const s : Date = await convertDateTime(startDateTime) 
+      const e : Date =  await convertDateTime(addMinutes(startDateTime,intervalTime))
+      
+      // for local time 
+
+      //const scheduleData={
+      // startDateTime:startDateTime ,
+      // endDateTime: addMinutes(startDateTime,intervalTime)
+      //} 
+      
+      //for utc time 
 
            const scheduleData={
-            startDateTime : startDateTime,
-            endDateTime :addMinutes(startDateTime,intervalTime)
+            startDateTime : s ,
+            endDateTime : e 
            } ;
 
            const existingScheduleData= await prisma.schedule.findFirst({
             where:{
-               startDateTime:scheduleData.startDateTime,
+               startDateTime:scheduleData.startDateTime ,
                endDateTime:scheduleData.endDateTime
             }
            }) ;
@@ -140,7 +154,7 @@ const getSingleSchedule=async(user:any,scheduleId:any)=>{
             id:scheduleId
          }
        }) ;
-
+      // console.log(result.startDateTime.getHours() +':'+result.startDateTime.getMinutes() ) ;
        return result ;
  } ;
 
