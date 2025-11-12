@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+
 import  bcrypt  from 'bcrypt';
 import prisma from "../../../shared/prisma";
 import generateToken, { verifyToken } from '../../../helper/jwtHelpers';
